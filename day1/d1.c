@@ -18,7 +18,8 @@ enum Mode {
 size_t CheckDigit(enum Mode mode, const char *buffer, size_t buffer_length) {
 	size_t index_digit;
 	switch (mode) {
-		case FORWARD: index_digit = 0;
+		case FORWARD:
+			index_digit = 0;
 			while (index_digit < buffer_length) {
 				if (isdigit(buffer[index_digit])) {
 					break;
@@ -26,7 +27,8 @@ size_t CheckDigit(enum Mode mode, const char *buffer, size_t buffer_length) {
 				index_digit++;
 			}
 			break;
-		case BACKWARDS: index_digit = buffer_length;
+		case BACKWARDS:
+			index_digit = buffer_length;
 			do {
 				if (isdigit(buffer[index_digit])) {
 					break;
@@ -42,7 +44,8 @@ void CheckAlpha(enum Mode mode, size_t index_digit, const char *buffer, char *nu
 	size_t k;
 	uint64_t index_alpha;
 	switch (mode) {
-		case FORWARD: index_alpha = ULLONG_MAX;
+		case FORWARD:
+			index_alpha = ULLONG_MAX;
 			for (k = 0; k < 10; ++k) {
 				char *p = strstr(buffer, alpha_numbers[k]);
 				if (!p) { continue; }
@@ -54,7 +57,8 @@ void CheckAlpha(enum Mode mode, size_t index_digit, const char *buffer, char *nu
 				}
 			}
 			break;
-		case BACKWARDS: index_alpha = 0;
+		case BACKWARDS:
+			index_alpha = 0;
 			k = strlen(buffer);
 			do {
 				for (size_t l = 0; l < 10; ++l) {
@@ -69,6 +73,8 @@ void CheckAlpha(enum Mode mode, size_t index_digit, const char *buffer, char *nu
 				}
 				k--;
 			} while (k != 0);
+			break;
+		default:
 			break;
 	}
 }
