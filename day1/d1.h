@@ -2,10 +2,11 @@
 // Created by oliver on 01.12.2023.
 //
 
-#ifndef AOC2023_D1_H
-#define AOC2023_D1_H
+#ifndef AOC2023_DAY1_D1_H_
+#define AOC2023_DAY1_D1_H_
+#include <stdint.h>
 
-int d1_1();
-int d1_2();
+uint64_t D11();
+uint64_t D12();
 
-#endif //AOC2023_D1_H
+#endif //AOC2023_DAY1_D1_H_
