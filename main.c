@@ -2,6 +2,10 @@
 
 #include "day1/d1.h"
 
+/**
+ * Main Entry point, basically just executes all the days in order.
+ * @return exit Code, doesnt matter.
+ */
 int main() {
     printf("%llu\n", D11());
     printf("%llu\n", D12());
