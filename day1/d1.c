@@ -46,6 +46,18 @@ size_t CheckDigit(Mode mode, size_t buffer_length, const char buffer[static buff
 	return index_digit;
 }
 
+/**
+ * Writes the first or last digit written as a word into number.
+ * Requires
+ * CheckDigit()
+ * to be run first.
+ * @param mode the mode of operation, can be FORWADS or BACKWARDS
+ * @param index_digit the index returned by CheckDigit()
+ * @param buffer_length the size of the buffer to read from
+ * @param buffer the buffer to read from
+ * @param number [out] the number to write to
+ * @param alpha_numbers the digits 0-9 in alphabetical form.
+ */
 void CheckAlpha(Mode mode,
 				size_t index_digit,
 				size_t buffer_length,
