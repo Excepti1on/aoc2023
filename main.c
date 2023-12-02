@@ -8,9 +8,9 @@
  * @return exit Code, doesnt matter.
  */
 int main() {
-    printf("%llu\n", D11());
-    printf("%llu\n", D12());
+//    printf("%llu\n", D11());
+//    printf("%llu\n", D12());
 	printf("%llu\n", D21());
 	printf("%llu\n", D22());
-    return 0;
+	return 0;
 }

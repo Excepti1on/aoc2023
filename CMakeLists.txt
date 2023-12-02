@@ -7,7 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 
-set(CMAKE_C_FLAGS "-march=native")
+set(CMAKE_C_FLAGS "-Oz -march=native")
 
 add_library(day1 OBJECT day1/d1.c day1/d1.h)
 

@@ -6,68 +6,52 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 #define RED_CUBES 12
 #define GREEN_CUBES 13
 #define BLUE_CUBES 14
 
-#define MAX(a, b) ((a) < (b) ? (b) : (a))
-
-size_t GetLineCount(FILE *file) {
-	char ch;
-	size_t lines = 1;
-	while (!feof(file)) {
-		ch = (char)fgetc(file);
-		if (ch == '\n') {
-			lines++;
-		}
-	}
-	rewind(file);
-	return lines;
-}
-
 uint64_t D21() {
 	FILE *file = fopen("../day2/input.txt", "r");
-	size_t lines = GetLineCount(file);
 	uint64_t count = 0;
+	uint64_t i = 1;
 	char buffer[256] = {};
-	for (size_t i = 0; i < lines; ++i) {
-		fgets(buffer, sizeof(buffer), file);
+	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		char *p;
-		char **draws = malloc(sizeof(char *) * 50);
-		strtok(buffer, ":");
-		bool failure = false;
-		size_t j = 0;
-		draws[j] = strtok(NULL, ";");
-		while (draws[j] != NULL) {
-			j++;
-			draws[j] = strtok(NULL, ";");
-		}
-		for (size_t k = 0; k < j; ++k) {
-			uint64_t blue = 0;
-			uint64_t red = 0;
-			uint64_t green = 0;
-			p = strtok(draws[k], ",");
-			while (p != NULL) {
-				if (strstr(p, "blue")) {
-					blue += strtoull(p, NULL, 10);
-				} else if (strstr(p, "green")) {
-					green += strtoull(p, NULL, 10);
-				} else if (strstr(p, "red")) {
-					red += strtoull(p, NULL, 10);
+		uint64_t digit = 0;
+		bool possible = true;
+		for (p = strtok(buffer, " :,;\n"); p != NULL; p = strtok(NULL, " :,;\n")) {
+			if (isdigit(p[0])) {
+				digit = strtoull(p, NULL, 10);
+			} else {
+				switch (p[0]) {
+					case 'r':
+						if (digit > RED_CUBES) {
+							possible = false;
+						}
+						break;
+					case 'g':
+						if (digit > GREEN_CUBES) {
+							possible = false;
+						}
+						break;
+					case 'b':
+						if (digit > BLUE_CUBES) {
+							possible = false;
+						}
+						break;
 				}
-				p = strtok(NULL, ",");
 			}
-			if (blue > BLUE_CUBES || red > RED_CUBES || green > GREEN_CUBES) {
-				failure = true;
+			if (!possible) {
 				break;
 			}
 		}
-		free(draws);
-		if (!failure) {
+		if (possible) {
 			count += i + 1;
 		}
+		i++;
 	}
 	fclose(file);
 	return count;
@@ -75,38 +59,38 @@ uint64_t D21() {
 
 uint64_t D22() {
 	FILE *file = fopen("../day2/input.txt", "r");
-	size_t lines = GetLineCount(file);
 	uint64_t count = 0;
 	char buffer[256] = {};
-	for (size_t i = 0; i < lines; ++i) {
-		fgets(buffer, sizeof(buffer), file);
+	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		char *p;
-		char **draws = malloc(sizeof(char *) * 50);
-		strtok(buffer, ":");
-		size_t j = 0;
-		draws[j] = strtok(nullptr, ";");
-		while (draws[j] != NULL) {
-			j++;
-			draws[j] = strtok(NULL, ";");
-		}
-		uint64_t blue = 0;
+		uint64_t digit = 0;
 		uint64_t red = 0;
+		uint64_t blue = 0;
 		uint64_t green = 0;
-		for (size_t k = 0; k < j; ++k) {
-			p = strtok(draws[k], ",");
-			while (p != NULL) {
-				if (strstr(p, "blue")) {
-					blue = MAX(blue, strtoull(p, NULL, 10));
-				} else if (strstr(p, "green")) {
-					green = MAX(green, strtoull(p, NULL, 10));
-				} else if (strstr(p, "red")) {
-					red = MAX(red, strtoull(p, NULL, 10));
+		for (p = strtok(buffer, " :,;\n"); p != NULL; p = strtok(NULL, " :,;\n")) {
+			if (isdigit(p[0])) {
+				digit = strtoull(p, NULL, 10);
+			} else {
+				switch (p[0]) {
+					case 'r':
+						if (digit > red) {
+							red = digit;
+						}
+						break;
+					case 'g':
+						if (digit > green) {
+							green = digit;
+						}
+						break;
+					case 'b':
+						if (digit > blue) {
+							blue = digit;
+						}
+						break;
 				}
-				p = strtok(NULL, ",");
 			}
 		}
-		free(draws);
-		count += blue * red * green;
+		count += red * green * blue;
 	}
 	fclose(file);
 	return count;
