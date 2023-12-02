@@ -14,17 +14,22 @@
 
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
-uint64_t D21() {
-	FILE *file = fopen("../day2/input.txt", "r");
+size_t GetLineCount(FILE *file) {
 	char ch;
 	size_t lines = 1;
 	while (!feof(file)) {
-		ch = fgetc(file);
+		ch = (char)fgetc(file);
 		if (ch == '\n') {
 			lines++;
 		}
 	}
 	rewind(file);
+	return lines;
+}
+
+uint64_t D21() {
+	FILE *file = fopen("../day2/input.txt", "r");
+	size_t lines = GetLineCount(file);
 	uint64_t count = 0;
 	char buffer[256] = {};
 	for (size_t i = 0; i < lines; ++i) {
@@ -70,15 +75,7 @@ uint64_t D21() {
 
 uint64_t D22() {
 	FILE *file = fopen("../day2/input.txt", "r");
-	char ch;
-	size_t lines = 1;
-	while (!feof(file)) {
-		ch = fgetc(file);
-		if (ch == '\n') {
-			lines++;
-		}
-	}
-	rewind(file);
+	size_t lines = GetLineCount(file);
 	uint64_t count = 0;
 	char buffer[256] = {};
 	for (size_t i = 0; i < lines; ++i) {
@@ -87,7 +84,7 @@ uint64_t D22() {
 		char **draws = malloc(sizeof(char *) * 50);
 		strtok(buffer, ":");
 		size_t j = 0;
-		draws[j] = strtok(NULL, ";");
+		draws[j] = strtok(nullptr, ";");
 		while (draws[j] != NULL) {
 			j++;
 			draws[j] = strtok(NULL, ";");
