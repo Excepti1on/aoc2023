@@ -10,7 +10,6 @@
 int main() {
 //    printf("%llu\n", D11());
 //    printf("%llu\n", D12());
-	printf("%llu\n", D21());
-	printf("%llu\n", D22());
+	printf("%llu\n", Day2());
 	return 0;
 }

@@ -6,7 +6,6 @@
 #define AOC2023_DAY2_D2_H_
 #include <stdint.h>
 
-uint64_t D21();
-uint64_t D22();
+uint64_t Day2();
 
 #endif //AOC2023_DAY2_D2_H_

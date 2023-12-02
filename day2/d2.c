@@ -13,53 +13,11 @@
 #define GREEN_CUBES 13
 #define BLUE_CUBES 14
 
-uint64_t D21() {
+uint64_t Day2() {
 	FILE *file = fopen("../day2/input.txt", "r");
 	uint64_t count = 0;
+	uint64_t sum = 0;
 	uint64_t i = 1;
-	char buffer[256] = {};
-	while (fgets(buffer, sizeof buffer, file) != NULL) {
-		char *p;
-		uint64_t digit = 0;
-		bool possible = true;
-		for (p = strtok(buffer, " :,;\n"); p != NULL; p = strtok(NULL, " :,;\n")) {
-			if (isdigit(p[0])) {
-				digit = strtoull(p, NULL, 10);
-			} else {
-				switch (p[0]) {
-					case 'r':
-						if (digit > RED_CUBES) {
-							possible = false;
-						}
-						break;
-					case 'g':
-						if (digit > GREEN_CUBES) {
-							possible = false;
-						}
-						break;
-					case 'b':
-						if (digit > BLUE_CUBES) {
-							possible = false;
-						}
-						break;
-				}
-			}
-			if (!possible) {
-				break;
-			}
-		}
-		if (possible) {
-			count += i + 1;
-		}
-		i++;
-	}
-	fclose(file);
-	return count;
-}
-
-uint64_t D22() {
-	FILE *file = fopen("../day2/input.txt", "r");
-	uint64_t count = 0;
 	char buffer[256] = {};
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		char *p;
@@ -67,31 +25,32 @@ uint64_t D22() {
 		uint64_t red = 0;
 		uint64_t blue = 0;
 		uint64_t green = 0;
+		bool possible = true;
 		for (p = strtok(buffer, " :,;\n"); p != NULL; p = strtok(NULL, " :,;\n")) {
-			if (isdigit(p[0])) {
+			if (isdigit(*p)) {
 				digit = strtoull(p, NULL, 10);
 			} else {
-				switch (p[0]) {
+				switch (*p) {
 					case 'r':
-						if (digit > red) {
-							red = digit;
-						}
+						possible &= digit <= RED_CUBES;
+						red = (digit > red) ? digit : red;
 						break;
 					case 'g':
-						if (digit > green) {
-							green = digit;
-						}
+						possible &= digit <= GREEN_CUBES;
+						green = (digit > green) ? digit : green;
 						break;
 					case 'b':
-						if (digit > blue) {
-							blue = digit;
-						}
+						possible &= digit <= BLUE_CUBES;
+						blue = (digit > blue) ? digit : blue;
 						break;
 				}
 			}
 		}
-		count += red * green * blue;
+		count += i * possible;
+		sum += red * green * blue;
+		i++;
 	}
 	fclose(file);
+	printf("%llu\n", sum);
 	return count;
 }
