@@ -13,7 +13,7 @@
 #define GREEN_CUBES 13
 #define BLUE_CUBES 14
 
-uint64_t Day2() {
+void Day2() {
 	FILE *file = fopen("../day2/input.txt", "r");
 	uint64_t count = 0;
 	uint64_t sum = 0;
@@ -51,6 +51,6 @@ uint64_t Day2() {
 		i++;
 	}
 	fclose(file);
+	printf("%llu\n", count);
 	printf("%llu\n", sum);
-	return count;
 }

@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <stdint.h>
 
+
 typedef enum Mode {
 	FORWARD,
 	BACKWARDS
@@ -148,4 +149,9 @@ uint64_t D12() {
 	}
 	fclose(file);
 	return result;
+}
+
+void Day1(){
+	printf("%llu\n", D11());
+	printf("%llu\n", D12());
 }

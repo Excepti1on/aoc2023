@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "day1/d1.h"
@@ -10,9 +9,8 @@
  * @return exit Code, doesnt matter.
  */
 int main() {
-//    printf("%llu\n", D11());
-//    printf("%llu\n", D12());
-//	printf("%llu\n", Day2());
+    Day1();
+	Day2();
 	Day3();
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
