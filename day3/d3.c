@@ -12,40 +12,45 @@
 
 void Day3() {
 	FILE *file = fopen("../Day3/input.txt", "r");
-	char buffer[GRID_SIZE * GRID_SIZE] = {};
+	char input[GRID_SIZE * GRID_SIZE] = {};
 	for (size_t i = 0; i < GRID_SIZE; ++i) {
-		fgets(buffer + i * GRID_SIZE, sizeof(buffer), file);
+		fgets(input + i * GRID_SIZE, sizeof(input), file);
 	}
 	fclose(file);
+
 	char digits[GRID_SIZE * GRID_SIZE] = {};
-	uint64_t sum = 0;
-	uint64_t sum2 = 0;
-	for (size_t i = 0; i < GRID_SIZE * GRID_SIZE; ++i) {
-		if (buffer[i] != '.' && !isdigit(buffer[i])) {
-			uint64_t is_star = (buffer[i] == '*') ? UINT64_MAX : 0;
-			uint64_t ratio = 1;
-			uint64_t found = 0;
-			for (size_t j = 0; j < 3; ++j) {
-				for (size_t k = 0; k < 3; ++k) {
-					if (isdigit(buffer[i + j - 1 + (k - 1) * GRID_SIZE])) {
-						size_t a = 0;
-						while (isdigit(buffer[i + j - 1 + (k - 1) * GRID_SIZE - a])) {
-							a++;
+	uint64_t part_one = 0;
+	uint64_t part_two = 0;
+
+	for (size_t position = 0; position < GRID_SIZE * GRID_SIZE; ++position) {
+		if (input[position] != '.' && !isdigit(input[position])) {
+			uint64_t is_star = (input[position] == '*') ? UINT64_MAX : 0;
+			uint64_t gear_ratio = 1;
+			uint64_t gear_count = 0;
+
+			for (size_t x = 0; x < 3; ++x) {
+				for (size_t y = 0; y < 3; ++y) {
+					if (isdigit(input[position + x - 1 + (y - 1) * GRID_SIZE])) {
+						size_t offset = 0;
+						while (isdigit(input[position + x - 1 + (y - 1) * GRID_SIZE - offset])) {
+							offset++;
 						}
-						if (digits[i + j - 1 + (k - 1) * GRID_SIZE - a + 1] == 0) {
-							digits[i + j - 1 + (k - 1) * GRID_SIZE - a + 1] = 1;
-							sum += strtoull(buffer + i + j - 1 + (k - 1) * GRID_SIZE - a + 1, NULL, 10);
-							ratio *= strtoull(buffer + i + j - 1 + (k - 1) * GRID_SIZE - a + 1, NULL, 10) & is_star;
-							found += is_star >> 63;
+
+						if (digits[position + x - 1 + (y - 1) * GRID_SIZE - offset + 1] == 0) {
+							digits[position + x - 1 + (y - 1) * GRID_SIZE - offset + 1] = 1;
+							part_one += strtoull(input + position + x - 1 + (y - 1) * GRID_SIZE - offset + 1, NULL, 10);
+							gear_ratio *=
+								strtoull(input + position + x - 1 + (y - 1) * GRID_SIZE - offset + 1, NULL, 10)
+									& is_star;
+							gear_count += is_star >> 63;
 						}
 					}
 				}
 			}
-			if (found == 2) {
-				sum2 += ratio;
-			}
+
+			part_two += (gear_count == 2) * gear_ratio;
 		}
 	}
-	printf("%llu\n", sum);
-	printf("%llu\n", sum2);
+	printf("%llu\n", part_one);
+	printf("%llu\n", part_two);
 }

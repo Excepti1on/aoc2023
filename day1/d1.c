@@ -10,7 +10,6 @@
 #include <limits.h>
 #include <stdint.h>
 
-
 typedef enum Mode {
 	FORWARD,
 	BACKWARDS
@@ -78,7 +77,7 @@ void CheckAlpha(Mode mode,
 				if (p - buffer < index_digit) {
 					if (p - buffer < index_alpha) {
 						index_alpha = p - buffer;
-						number[0] = (char)(k + 48);
+						number[0] = (char) (k + 48);
 					}
 				}
 			}
@@ -96,7 +95,7 @@ void CheckAlpha(Mode mode,
 					if (p - buffer > index_digit) {
 						if (p - buffer > index_alpha) {
 							index_alpha = p - buffer;
-							number[1] = (char)(l + 48);
+							number[1] = (char) (l + 48);
 							set = true;
 						}
 					}
@@ -151,7 +150,7 @@ uint64_t D12() {
 	return result;
 }
 
-void Day1(){
+void Day1() {
 	printf("%llu\n", D11());
 	printf("%llu\n", D12());
 }

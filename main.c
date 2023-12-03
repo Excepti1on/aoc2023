@@ -9,7 +9,7 @@
  * @return exit Code, doesnt matter.
  */
 int main() {
-    Day1();
+	Day1();
 	Day2();
 	Day3();
 	return EXIT_SUCCESS;
