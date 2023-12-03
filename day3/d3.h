@@ -7,6 +7,6 @@
 
 #include <stdint.h>
 
-uint64_t D31();
+void day3();
 
 #endif //AOC2023_DAY3_D3_H_
