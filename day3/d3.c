@@ -18,7 +18,7 @@ void Day3() {
 	}
 	fclose(file);
 
-	char digits[GRID_SIZE * GRID_SIZE] = {};
+	uint8_t digits[GRID_SIZE * GRID_SIZE] = {};
 	uint64_t part_one = 0;
 	uint64_t part_two = 0;
 
