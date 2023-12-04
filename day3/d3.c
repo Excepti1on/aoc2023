@@ -11,7 +11,7 @@
 #define GRID_SIZE 140
 
 void Day3() {
-	FILE *file = fopen("../Day3/input.txt", "r");
+	FILE *file = fopen("../day3/input.txt", "r");
 	char input[GRID_SIZE * GRID_SIZE] = {};
 	for (size_t i = 0; i < GRID_SIZE; ++i) {
 		fgets(input + i * GRID_SIZE, sizeof(input), file);

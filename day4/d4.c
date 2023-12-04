@@ -27,15 +27,11 @@ void Day4() {
 		uint32_t checking_cards[CHECK_CARDS] = {};
 
 		strtok(buffer, ":");
-		char *p = strtok(NULL, " ");
-
-		for (size_t i = 0; i < WINNING_CARDS; ++i, p = strtok(NULL, " | ")) {
-			winning_cards[i] = strtoul(p, &p, 10);
-		}
-
-		for (size_t i = 0; i < CHECK_CARDS; ++i, p = strtok(NULL, " \n")) {
-			checking_cards[i] = strtoul(p, &p, 10);
-		}
+		char *p = strtok(NULL, "|");
+		size_t i;
+		for (i = 0, winning_cards[0]=strtoull(p, &p, 10); i < WINNING_CARDS-1; i++, winning_cards[i]=strtoull(p, &p, 10));
+		p = strtok(NULL, "\n");
+		for (i = 0, checking_cards[0]=strtoull(p, &p, 10); i < CHECK_CARDS-1; i++, checking_cards[i]=strtoull(p, &p, 10));
 		for (size_t i = 0; i < CHECK_CARDS; ++i) {
 			for (size_t j = 0; j < WINNING_CARDS; ++j) {
 				scores[index] += (checking_cards[i] == winning_cards[j]);

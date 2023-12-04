@@ -84,18 +84,18 @@ void CheckAlpha(Mode mode,
 			return;
 		case BACKWARDS:
 			index_alpha = 0;
-			k = buffer_length;
+			k = buffer_length-1;
 			bool set = false;
 			do {
 				for (size_t l = 0; l < 10; ++l) {
-					char *p = strstr(buffer + k, alpha_numbers[l]);
-					if (!p) {
+					uint32_t result = strncmp(buffer+k, alpha_numbers[l], strlen(alpha_numbers[l]));
+					if(result!=0){
 						continue;
 					}
-					if (p - buffer > index_digit) {
-						if (p - buffer > index_alpha) {
-							index_alpha = p - buffer;
-							number[1] = (char) (l + 48);
+					if(k > index_digit){
+						if(k > index_alpha){
+							index_alpha = k;
+							number[1] = (l+48);
 							set = true;
 						}
 					}
