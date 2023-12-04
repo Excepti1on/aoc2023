@@ -35,11 +35,11 @@ void Day4() {
 		char *p = strtok(NULL, " ");
 
 		for (size_t i = 0; i < WINNING_CARDS; ++i, p = strtok(NULL, " | ")) {
-			winning_cards[i] = strtoul(p, NULL, 10);
+			winning_cards[i] = strtoul(p, &p, 10);
 		}
 
 		for (size_t i = 0; i < CHECK_CARDS; ++i, p = strtok(NULL, " \n")) {
-			checking_cards[i] = strtoul(p, NULL, 10);
+			checking_cards[i] = strtoul(p, &p, 10);
 		}
 
 		counts[index] = 0;
