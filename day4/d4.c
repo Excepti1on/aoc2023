@@ -26,11 +26,13 @@ void Day4() {
 
 	char buffer[128] = {};
 	uint32_t counts[CARD_COUNT] = {};
-	uint32_t winning_cards[WINNING_CARDS] = {};
-	uint32_t checking_cards[CHECK_CARDS] = {};
 	size_t index = 0;
+	uint32_t global_sum;
 
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
+		uint32_t winning_cards[WINNING_CARDS] = {};
+		uint32_t checking_cards[CHECK_CARDS] = {};
+
 		strtok(buffer, ":");
 		char *p = strtok(NULL, " ");
 
@@ -45,9 +47,7 @@ void Day4() {
 		counts[index] = 0;
 		for (size_t i = 0; i < CHECK_CARDS; ++i) {
 			for (size_t j = 0; j < WINNING_CARDS; ++j) {
-				if (winning_cards[j] == checking_cards[i]) {
-					counts[index]++;
-				}
+				counts[index] += (checking_cards[i] == winning_cards[j]);
 			}
 		}
 
@@ -56,9 +56,12 @@ void Day4() {
 
 	fclose(file);
 
-	uint32_t global_sum = 0;
+	global_sum = 0;
 	for (size_t i = 0; i < index; ++i) {
-		global_sum += (counts[i] > 0) ? 1 << (counts[i] - 1) : 0;
+		if (counts[i] != 0) {
+			global_sum += 1 << (counts[i] - 1);
+		}
+
 	}
 	printf("Points Part 1: %u\n", global_sum);
 
