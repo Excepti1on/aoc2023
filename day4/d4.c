@@ -13,18 +13,11 @@
 #define CHECK_CARDS 25
 #define CARD_COUNT 198
 
-uint32_t Evaluate(size_t n, uint32_t counts[static n], size_t index) {
-	uint32_t sum = 1;
-	for (size_t i = 0; i < counts[index]; ++i) {
-		sum += Evaluate(n, counts, index + i + 1);
-	}
-	return sum;
-}
-
 void Day4() {
 	FILE *file = fopen("../day4/input.txt", "r");
 
 	char buffer[128] = {};
+	uint32_t scores[CARD_COUNT] = {};
 	uint32_t counts[CARD_COUNT] = {};
 	size_t index = 0;
 	uint32_t global_sum;
@@ -43,14 +36,13 @@ void Day4() {
 		for (size_t i = 0; i < CHECK_CARDS; ++i, p = strtok(NULL, " \n")) {
 			checking_cards[i] = strtoul(p, &p, 10);
 		}
-
-		counts[index] = 0;
 		for (size_t i = 0; i < CHECK_CARDS; ++i) {
 			for (size_t j = 0; j < WINNING_CARDS; ++j) {
-				counts[index] += (checking_cards[i] == winning_cards[j]);
+				scores[index] += (checking_cards[i] == winning_cards[j]);
 			}
 		}
 
+		counts[index] = 1;
 		index++;
 	}
 
@@ -58,8 +50,8 @@ void Day4() {
 
 	global_sum = 0;
 	for (size_t i = 0; i < index; ++i) {
-		if (counts[i] != 0) {
-			global_sum += 1 << (counts[i] - 1);
+		if (scores[i] != 0) {
+			global_sum += 1 << (scores[i] - 1);
 		}
 
 	}
@@ -67,7 +59,10 @@ void Day4() {
 
 	global_sum = 0;
 	for (size_t i = 0; i < index; ++i) {
-		global_sum += Evaluate(index, counts, i);
+		for (int j = 0; j < scores[i]; ++j) {
+			counts[i + j + 1] += counts[i];
+		}
+		global_sum += counts[i];
 	}
 	printf("Cards Part 2: %u\n", global_sum);
 }
