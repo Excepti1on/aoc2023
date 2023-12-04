@@ -29,15 +29,19 @@ void Day4() {
 	uint32_t winning_cards[WINNING_CARDS] = {};
 	uint32_t checking_cards[CHECK_CARDS] = {};
 	size_t index = 0;
+
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		strtok(buffer, ":");
 		char *p = strtok(NULL, " ");
+
 		for (size_t i = 0; i < WINNING_CARDS; ++i, p = strtok(NULL, " | ")) {
 			winning_cards[i] = strtoul(p, NULL, 10);
 		}
+
 		for (size_t i = 0; i < CHECK_CARDS; ++i, p = strtok(NULL, " \n")) {
 			checking_cards[i] = strtoul(p, NULL, 10);
 		}
+
 		counts[index] = 0;
 		for (size_t i = 0; i < CHECK_CARDS; ++i) {
 			for (size_t j = 0; j < WINNING_CARDS; ++j) {
@@ -46,9 +50,12 @@ void Day4() {
 				}
 			}
 		}
+
 		index++;
 	}
+
 	fclose(file);
+
 	uint32_t global_sum = 0;
 	for (size_t i = 0; i < index; ++i) {
 		global_sum += (counts[i] > 0) ? 1 << (counts[i] - 1) : 0;
