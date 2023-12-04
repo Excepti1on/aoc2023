@@ -15,6 +15,8 @@ add_library(day2 OBJECT day2/d2.c day2/d2.h)
 
 add_library(day3 OBJECT day3/d3.c day3/d3.h)
 
+add_library(day4 OBJECT day4/d4.c day4/d4.h)
+
 add_executable(${PROJECT_NAME} main.c)
 
-target_link_libraries(${PROJECT_NAME} day1 day2 day3)
+target_link_libraries(${PROJECT_NAME} day1 day2 day3 day4)
