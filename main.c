@@ -6,23 +6,24 @@
 #include "day2/d2.h"
 #include "day3/d3.h"
 #include "day4//d4.h"
+#include "day5/d5.h"
 
 /**
  * Main Entry point, basically just executes all the days in order.
  * @return exit Code, doesnt matter.
  */
-int main(int argc, char* argv[]) {
-	if (argc == 1)
-	{
+int main(int argc, char *argv[]) {
+	if (argc == 1) {
 		Day1();
 		Day2();
 		Day3();
 		Day4();
+		Day5();
 		return EXIT_SUCCESS;
 	}
-	
-	while ((++argv)[0]){
-			switch (argv[0][0]){
+
+	while ((++argv)[0]) {
+		switch (argv[0][0]) {
 			case '1':
 				Day1();
 				break;
@@ -38,11 +39,15 @@ int main(int argc, char* argv[]) {
 			case '4':
 				Day4();
 				break;
-			
+
+			case '5':
+				Day5();
+				break;
+
 			default:
 				break;
-			}
+		}
 	}
-	
+
 	return EXIT_SUCCESS;
 }
