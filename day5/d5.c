@@ -61,10 +61,9 @@ void Day5() {
 	printf("%lld\n", min);
 	int64_t min2 = INT64_MAX;
 	for (int x = 0; x < SEED_COUNT; x += 2) {
-		printf("%lld\t%lld\t", numbers[x], numbers[x + 1]);
+		printf("%lld\t%lld\t%d\t", numbers[x], numbers[x + 1],x);
 		int64_t nums = numbers[x + 1];
-		int64_t *check = calloc(numbers[x + 1] * 2, sizeof(int64_t));
-		printf("%lld\t\n", numbers[x]);
+		int64_t *check = calloc(numbers[x + 1] * 8, sizeof(int64_t));
 		for (int j = 0; j < numbers[x + 1]; ++j) {
 			check[j] = numbers[x] + j;
 		}
@@ -77,8 +76,9 @@ void Day5() {
 				continue;
 			}
 			if (isalpha(buffer[0])) {
+				category++;
 				for (int i = 0; i < numbers[x + 1]; ++i) {
-					check[i + nums] = check[i];
+					check[i + nums*category] = check[i+ nums*(category-1)];
 				}
 				continue;
 			}
@@ -89,14 +89,12 @@ void Day5() {
 			int64_t diff = map[0] - map[1];
 			it++;
 			for (size_t i = 0; i < numbers[x + 1]; ++i) {
-				if (check[i +nums] >= map[1]
-					&& check[i +  nums] < map[1] + map[2]) {
-					check[i] += diff;
+				if (check[i+ nums*(category-1)] >= map[1]
+					&& check[i+ nums*(category-1)] < map[1] + map[2]) {
+					check[i+ nums*(category)] += diff;
 				}
 			}
 		}
-		memcpy(check, check+nums, nums*sizeof(int64_t));
-		memset(check+nums, 0, nums*sizeof(int64_t));
 		rewind(file);
 		min = INT64_MAX;
 		for (int i = 0; i < numbers[x + 1]; ++i) {
