@@ -11,6 +11,8 @@
 
 #define SEED_COUNT 20
 #define MIN(a, b) (((a)<(b))?(a):(b))
+
+#define BLOCK_SIZE 1024
 void Day5() {
 	FILE *file = fopen("../day5/input.txt", "r");
 	char buffer[256];
@@ -59,17 +61,20 @@ void Day5() {
 		min = MIN(min, almanac[i][7]);
 	}
 	printf("%lld\n", min);
+
+	size_t insanity = 0;
 	int64_t min2 = INT64_MAX;
 	for (int x = 0; x < SEED_COUNT; x += 2) {
-		printf("%lld\t%lld\t%d\t", numbers[x], numbers[x + 1], x);
+		printf("%lld \t%lld \t %d\t", numbers[x], numbers[x + 1], x);
 		int64_t nums = numbers[x + 1];
-		int64_t *check = calloc(numbers[x + 1] * 8, sizeof(int64_t));
-		for (int j = 0; j < numbers[x + 1]; ++j) {
-			check[j] = numbers[x] + j;
+		uint32_t *check = calloc(nums * 2, sizeof(uint32_t));
+		for (int j = 0; j < nums; ++j) {
+			check[j+nums] = numbers[x] + j;
 		}
 		category = 0;
 		fgets(buffer, sizeof buffer, file);
-		uint64_t it = 0;
+		uint64_t block_count = numbers[x+1]/BLOCK_SIZE;
+		uint64_t last_block = numbers[x+1]%BLOCK_SIZE;
 		while (fgets(buffer, sizeof buffer, file) != NULL) {
 			int64_t map[3] = {};
 			if (buffer[0] == '\n') {
@@ -77,8 +82,8 @@ void Day5() {
 			}
 			if (isalpha(buffer[0])) {
 				category++;
-				for (int i = 0; i < numbers[x + 1]; ++i) {
-					check[i + nums * category] = check[i + nums * (category - 1)];
+				for (int i = 0; i < nums; ++i) {
+					check[i] = check[i + nums];
 				}
 				continue;
 			}
@@ -87,21 +92,38 @@ void Day5() {
 				map[i] = strtoll(pch, &pch, 10);
 			}
 			int64_t diff = map[0] - map[1];
-			it++;
-			for (size_t i = 0; i < numbers[x + 1]; ++i) {
-				if (check[i + nums * (category - 1)] >= map[1]
-					&& check[i + nums * (category - 1)] < map[1] + map[2]) {
-					check[i + nums * (category)] += diff;
+
+			#pragma omp parallel for simd collapse(2)
+			for (size_t i = 0; i < block_count-1; i++)
+			{
+				for (size_t j = 0; j < BLOCK_SIZE; j++)
+				{
+					insanity++;
+					if (check[i*BLOCK_SIZE + j] >= map[1]
+					&& check[i*BLOCK_SIZE + j] < map[1] + map[2]) {
+					check[i*BLOCK_SIZE + j + nums] += diff;
+					}
+				}
+				
+			}
+			#pragma omp for simd
+			for (size_t i = 0; i < last_block; i++)
+			{
+				if (check[i] >= map[1]
+					&& check[i] < map[1] + map[2]) {
+					check[i + nums] += diff;
 				}
 			}
+			
 		}
 		rewind(file);
 		min = INT64_MAX;
-		for (int i = 0; i < numbers[x + 1]; ++i) {
-			min = MIN(min, check[i + 7 * nums]);
+		for (int i = 0; i < nums; ++i) {
+			min = MIN(min, check[i + nums]);
 		}
 		min2 = MIN(min, min2);
 		printf("%lld\n", min2);
 		free(check);
 	}
+	printf("Insanity: %zu/n", insanity);
 }
