@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define NUM_RACES 4
 
@@ -53,21 +54,59 @@ void Day6() {
 	}
 	uint64_t time = strtoull(number1, NULL, 10);
 	uint64_t distance = strtoull(number2, NULL, 10);
+	free(number1);
+	free(number2);
+	
 	uint64_t begin = 0;
 	uint64_t end = 0;
-	for (size_t i = 1; i <= time; ++i) {
+	uint64_t block1 = 0, block2 = 0, block3 = 0, block4 = 0;
+	#define BLOCK_SIZE 0x10000
+	for (size_t i = 1; i <= time; i+=BLOCK_SIZE) {
 		uint64_t travelled = (time - i) * i;
+		block1++;
 		if (travelled > distance) {
 			begin = i;
 			break;
 		}
 	}
-	for (size_t i = time; i > 0 ; i--) {
+	for (size_t i = begin-BLOCK_SIZE; i < begin; i++)
+	{
+		uint64_t travelled = (time - i) * i;
+		block1++;
+		if (travelled > distance) {
+			begin = i;
+			break;
+		}
+	}
+	
+	for (size_t i = time; i > 0 ; i-=BLOCK_SIZE) {
 		uint64_t travelled = i * (time - i);
+		block2++;
 		if(travelled > distance){
 			end = i;
 			break;
 		}
 	}
-	printf("Part 2, 1 Race: %llu\n", end-begin);
+	for (size_t i = end+BLOCK_SIZE; i > end; i--){
+		uint64_t travelled = i * (time - i);
+		block2++;
+		if(travelled > distance){
+			end = i;
+			break;
+		}
+	}
+	printf("%llu %llu\n", block1, block2);
+	/*
+	// f(x) = -x² +time*x - distance
+	double p = (double)time * -1.0;
+	double q = (double)distance;
+	double x0 = -(p/2) + sqrt(pow((p/2), 2) - q);
+	double x1 = -(p/2) - sqrt(pow((p/2), 2) - q);
+
+	printf("%llu %llu\n", time, distance);
+
+	printf("%llu %f %f\n", (uint64_t)(x0-x1), p, q);
+	*/
+	printf("Part 2, 1 Race: %llu\nBegin: %llu\n End: %llu\n", end-begin, begin, end);
+	
 }
