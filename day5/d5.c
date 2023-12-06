@@ -61,7 +61,7 @@ void Day5() {
 	printf("%lld\n", min);
 	int64_t min2 = INT64_MAX;
 	for (int x = 0; x < SEED_COUNT; x += 2) {
-		printf("%lld\t%lld\t%d\t", numbers[x], numbers[x + 1],x);
+		printf("%lld\t%lld\t%d\t", numbers[x], numbers[x + 1], x);
 		int64_t nums = numbers[x + 1];
 		int64_t *check = calloc(numbers[x + 1] * 8, sizeof(int64_t));
 		for (int j = 0; j < numbers[x + 1]; ++j) {
@@ -78,7 +78,7 @@ void Day5() {
 			if (isalpha(buffer[0])) {
 				category++;
 				for (int i = 0; i < numbers[x + 1]; ++i) {
-					check[i + nums*category] = check[i+ nums*(category-1)];
+					check[i + nums * category] = check[i + nums * (category - 1)];
 				}
 				continue;
 			}
@@ -89,16 +89,16 @@ void Day5() {
 			int64_t diff = map[0] - map[1];
 			it++;
 			for (size_t i = 0; i < numbers[x + 1]; ++i) {
-				if (check[i+ nums*(category-1)] >= map[1]
-					&& check[i+ nums*(category-1)] < map[1] + map[2]) {
-					check[i+ nums*(category)] += diff;
+				if (check[i + nums * (category - 1)] >= map[1]
+					&& check[i + nums * (category - 1)] < map[1] + map[2]) {
+					check[i + nums * (category)] += diff;
 				}
 			}
 		}
 		rewind(file);
 		min = INT64_MAX;
 		for (int i = 0; i < numbers[x + 1]; ++i) {
-			min = MIN(min, check[i + 7*nums]);
+			min = MIN(min, check[i + 7 * nums]);
 		}
 		min2 = MIN(min, min2);
 		printf("%lld\n", min2);
