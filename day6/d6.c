@@ -38,7 +38,7 @@ void Day6() {
 	for (size_t i = 0; i < NUM_RACES; ++i) {
 		all_wins *= wins[i];
 	}
-	printf("%llu\n", all_wins);
+	printf("Part 1, 4 Races: %llu\n", all_wins);
 	char *number1 = calloc(20, sizeof(char));
 	char *number2 = calloc(20, sizeof(char));
 	pch = strtok(buffer, " ");
@@ -60,6 +60,5 @@ void Day6() {
 			wins_part_two++;
 		}
 	}
-	printf("%llu\n", wins_part_two);
-
+	printf("Part 2, 1 Race: %llu\n", wins_part_two);
 }
