@@ -53,12 +53,21 @@ void Day6() {
 	}
 	uint64_t time = strtoull(number1, NULL, 10);
 	uint64_t distance = strtoull(number2, NULL, 10);
-	uint64_t wins_part_two = 0;
+	uint64_t begin = 0;
+	uint64_t end = 0;
 	for (size_t i = 1; i <= time; ++i) {
 		uint64_t travelled = (time - i) * i;
 		if (travelled > distance) {
-			wins_part_two++;
+			begin = i;
+			break;
 		}
 	}
-	printf("Part 2, 1 Race: %llu\n", wins_part_two);
+	for (size_t i = time; i > 0 ; i--) {
+		uint64_t travelled = i * (time - i);
+		if(travelled > distance){
+			end = i;
+			break;
+		}
+	}
+	printf("Part 2, 1 Race: %llu\n", end-begin);
 }
