@@ -8,6 +8,7 @@
 #include "day4/d4.h"
 #include "day5/d5.h"
 #include "day6/d6.h"
+#include "day7/d7.h"
 
 /**
  * Main Entry point, basically just executes all the days in order.
@@ -48,6 +49,9 @@ int main(int argc, char *argv[]) {
 
 			case '6':
 				Day6();
+				break;
+			case '7':
+				Day7();
 				break;
 
 			default:
