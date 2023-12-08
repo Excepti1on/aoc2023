@@ -28,6 +28,7 @@ void Day8() {
 	fgets(buffer, sizeof buffer, file);
 	size_t index = 0;
 	char temp[4] = {};
+	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		directions[index] = malloc(sizeof(Direction));
 		strncpy(temp, buffer, 3);
@@ -37,14 +38,10 @@ void Day8() {
 		directions[index]->left = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 12, 3);
 		directions[index]->right = strtoull(temp, NULL, 36);
+		lookup[directions[index]->name] = index;
 		index++;
 	}
 	fclose(file);
-
-	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
-	for (size_t i = 0; i < index; i++) {
-		lookup[directions[i]->name] = i;
-	}
 
 	Direction *current = directions[0];
 	uint64_t aaa = strtoull("AAA", NULL, 36);

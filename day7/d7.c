@@ -56,9 +56,9 @@ void Day7() {
 		//belongs to part 1
 		HandValue(game[i]);
 	}
-
 	//part 1:
 	qsort(game, lines, sizeof(CardGame *), CompareFunction);
+
 	uint64_t result = 0;
 	for (size_t i = 0; i < lines; i++) {
 		result += game[i]->bid * (i + 1);
@@ -206,30 +206,27 @@ int32_t CompareFunction(const void *p1, const void *p2) {
 
 int64_t CardValue(CardGame *card, size_t n) {
 	if (isdigit(card->hand[n])) {
+		if (part2) {
+			return card->hand[n] - '0' - 1;
+		}
 		return card->hand[n] - '0' - 2;
 	} else {
 		switch (card->hand[n]) {
 			case 'T':
-				return 8;
-			case 'J':
-				if (part2) {
-					return -1;
-				}
-				return 9;
-			case 'Q':
 				if (part2) {
 					return 9;
 				}
+				return 8;
+			case 'J':
+				if (part2) {
+					return 0;
+				}
+				return 9;
+			case 'Q':
 				return 10;
 			case 'K':
-				if (part2) {
-					return 10;
-				}
 				return 11;
 			case 'A':
-				if (part2) {
-					return 11;
-				}
 				return 12;
 			default:
 				break;

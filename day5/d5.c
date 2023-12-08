@@ -93,7 +93,7 @@ void Day5() {
 			}
 			int64_t diff = map[0] - map[1];
 
-#pragma omp parallel for simd collapse(2)
+#pragma omp parallel for simd collapse(2) default(none) shared(block_count, insanity, check, map, nums, diff)
 			for (size_t i = 0; i < block_count - 1; i++) {
 				for (size_t j = 0; j < BLOCK_SIZE; j++) {
 					insanity++;
@@ -122,5 +122,5 @@ void Day5() {
 		printf("%lld\n", min2);
 		free(check);
 	}
-	printf("Insanity: %zu/n", insanity);
+	printf("Insanity: %zu\n", insanity);
 }
