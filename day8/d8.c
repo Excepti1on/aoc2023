@@ -21,20 +21,8 @@ u_int64_t gcd(u_int64_t a, u_int64_t b)
 	return gcd(b, a % b);
 }
 
-u_int64_t lcm(u_int64_t a, u_int64_t b) { return (a / gcd(a, b)) * b; }
-
-int cmp(const void *p1, const void *p2)
-{
-	direction *c1 = *(direction **)p1;
-	direction *c2 = *(direction **)p2;
-	return (c1->nameN - c2->nameN);
-}
-
-int cmp_uint_64(const void *p1, const void *p2)
-{
-	u_int64_t i1 = *(const u_int64_t *)p1;
-	u_int64_t i2 = *(const u_int64_t *)p2;
-	return (i1 - i2);
+u_int64_t lcm(u_int64_t a, u_int64_t b) {
+	return (a / gcd(a, b)) * b; 
 }
 
 void Day8()
@@ -51,7 +39,6 @@ void Day8()
 	fgets(buffer, sizeof buffer, file);
 	size_t index = 0;
 	char temp[4] = {};
-	u_int64_t numbers[lines - 2];
 	while (fgets(buffer, sizeof buffer, file) != NULL)
 	{
 		directions[index] = malloc(sizeof(direction));
@@ -62,7 +49,6 @@ void Day8()
 		directions[index]->leftN = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 12, 3);
 		directions[index]->rightN = strtoull(temp, NULL, 36);
-		numbers[index] = directions[index]->nameN;
 		index++;
 	}
 	fclose(file);
@@ -70,7 +56,7 @@ void Day8()
 	u_int64_t *lookup = calloc(46655, sizeof(u_int64_t));
 	for (size_t i = 0; i < index; i++)
 	{
-		lookup[numbers[i]] = i;
+		lookup[directions[i]->nameN] = i;
 	}
 
 	direction *current;
