@@ -292,6 +292,8 @@ void Day7(){
     for (size_t i = 0; i < lines; i++)
     {
         result += game[i]->bid * (i+1);
+        free(game[i]);
     }
+    free(game);
     printf("Result Part two: %llu\n", result);
 }

@@ -30,19 +30,18 @@ int cmp(const void *p1, const void *p2)
 	return (c1->nameN - c2->nameN);
 }
 
+int cmp_uint_64(const void *p1, const void *p2)
+{
+	u_int64_t i1 = *(const u_int64_t *)p1;
+	u_int64_t i2 = *(const u_int64_t *)p2;
+	return (i1 - i2);
+}
+
 void Day8()
 {
 	FILE *file = fopen("../day8/input.txt", "r");
 	char ch;
-	size_t lines = 1;
-	while (!feof(file))
-	{
-		ch = fgetc(file);
-		if (ch == '\n')
-		{
-			lines++;
-		}
-	}
+	const size_t lines = 716;
 	direction **directions = malloc(sizeof(direction *) * (lines - 2));
 	rewind(file);
 	char instructions[512] = {};
@@ -52,6 +51,7 @@ void Day8()
 	fgets(buffer, sizeof buffer, file);
 	size_t index = 0;
 	char temp[4] = {};
+	u_int64_t numbers[lines - 2];
 	while (fgets(buffer, sizeof buffer, file) != NULL)
 	{
 		directions[index] = malloc(sizeof(direction));
@@ -62,10 +62,17 @@ void Day8()
 		directions[index]->leftN = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 12, 3);
 		directions[index]->rightN = strtoull(temp, NULL, 36);
+		numbers[index] = directions[index]->nameN;
 		index++;
 	}
 	fclose(file);
-	qsort(directions, lines - 2, sizeof(direction *), cmp);
+
+	u_int64_t *lookup = calloc(46655, sizeof(u_int64_t));
+	for (size_t i = 0; i < index; i++)
+	{
+		lookup[numbers[i]] = i;
+	}
+
 	direction *current;
 	u_int64_t aaa = strtoull("AAA", NULL, 36);
 	for (size_t i = 0; i < index; i++)
@@ -86,20 +93,11 @@ void Day8()
 		switch (instructions[instructionIndex])
 		{
 		case 'L':
-			while (current->leftN != directions[i]->nameN)
-			{
-				++i;
-			}
-			current = directions[i];
+			current = directions[lookup[current->leftN]];
 			instructionIndex = (instructionIndex + 1) % instructionCount;
 			break;
 		case 'R':
-
-			while (current->rightN != directions[i]->nameN)
-			{
-				++i;
-			}
-			current = directions[i];
+			current = directions[lookup[current->rightN]];
 			instructionIndex = (instructionIndex + 1) % instructionCount;
 			break;
 		}
@@ -125,10 +123,7 @@ void Day8()
 		}
 	}
 	instructionIndex = 0;
-	int is_z = 0;
-	int check[a_count] = {};
 	u_int64_t all_steps[a_count];
-#pragma omp parallel for simd
 	for (size_t j = 0; j < a_count; j++)
 	{
 		instructionIndex = 0;
@@ -141,21 +136,11 @@ void Day8()
 			switch (instructions[instructionIndex])
 			{
 			case 'L':
-			i = (part_two[j]->rightN - 13330) >> 13;
-				while (part_two[j]->leftN != directions[i]->nameN)
-				{
-					++i;
-				}
-				part_two[j] = directions[i];
+				part_two[j] = directions[lookup[part_two[j]->leftN]];
 				instructionIndex = (instructionIndex + 1) % instructionCount;
 				break;
 			case 'R':
-			i = (part_two[j]->rightN - 13330) >> 10;
-				while (part_two[j]->rightN != directions[i]->nameN)
-				{
-					++i;
-				}
-				part_two[j] = directions[i];
+				part_two[j] = directions[lookup[part_two[j]->rightN]];
 				instructionIndex = (instructionIndex + 1) % instructionCount;
 				break;
 			}
@@ -166,6 +151,7 @@ void Day8()
 	{
 		free(directions[i]);
 	}
+	free(lookup);
 	free(directions);
 	free(part_two);
 	u_int64_t result = 1;
