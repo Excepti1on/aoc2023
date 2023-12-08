@@ -3,147 +3,124 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
-typedef struct direction
-{
-	u_int64_t leftN;
-	u_int64_t rightN;
-	u_int64_t nameN;
-	char lastName
-} direction;
+typedef struct direction {
+	uint64_t left_n;
+	uint64_t right_n;
+	uint64_t name_n;
+	char last_name;
+} Direction;
 
-u_int64_t gcd(u_int64_t a, u_int64_t b)
-{
-	if (b == 0)
-	{
+uint64_t Gcd(uint64_t a, uint64_t b) {
+	if (b == 0) {
 		return a;
 	}
-	return gcd(b, a % b);
+	return Gcd(b, a % b);
 }
 
-u_int64_t lcm(u_int64_t a, u_int64_t b) {
-	return (a / gcd(a, b)) * b; 
+uint64_t Lcm(uint64_t a, uint64_t b) {
+	return (a / Gcd(a, b)) * b;
 }
 
-void Day8()
-{
+void Day8() {
 	FILE *file = fopen("../day8/input.txt", "r");
-	char ch;
-	const size_t lines = 716;
-	direction **directions = malloc(sizeof(direction *) * (lines - 2));
+	const size_t kLines = 716;
+	Direction **directions = malloc(sizeof(Direction *) * (kLines - 2));
 	rewind(file);
 	char instructions[512] = {};
 	fgets(instructions, sizeof instructions, file);
-	size_t instructionCount = strlen(instructions) - 1;
+	size_t instruction_count = strlen(instructions) - 1;
 	char buffer[32];
 	fgets(buffer, sizeof buffer, file);
 	size_t index = 0;
 	char temp[4] = {};
-	while (fgets(buffer, sizeof buffer, file) != NULL)
-	{
-		directions[index] = malloc(sizeof(direction));
+	while (fgets(buffer, sizeof buffer, file) != NULL) {
+		directions[index] = malloc(sizeof(Direction));
 		strncpy(temp, buffer, 3);
-		directions[index]->lastName = temp[2];
-		directions[index]->nameN = strtoull(temp, NULL, 36);
+		directions[index]->last_name = temp[2];
+		directions[index]->name_n = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 7, 3);
-		directions[index]->leftN = strtoull(temp, NULL, 36);
+		directions[index]->left_n = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 12, 3);
-		directions[index]->rightN = strtoull(temp, NULL, 36);
+		directions[index]->right_n = strtoull(temp, NULL, 36);
 		index++;
 	}
 	fclose(file);
 
-	u_int64_t *lookup = calloc(46655, sizeof(u_int64_t));
-	for (size_t i = 0; i < index; i++)
-	{
-		lookup[directions[i]->nameN] = i;
+	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
+	for (size_t i = 0; i < index; i++) {
+		lookup[directions[i]->name_n] = i;
 	}
 
-	direction *current;
-	u_int64_t aaa = strtoull("AAA", NULL, 36);
-	for (size_t i = 0; i < index; i++)
-	{
-		if (directions[i]->nameN == aaa)
-		{
+	Direction *current = directions[0];
+	uint64_t aaa = strtoull("AAA", NULL, 36);
+	for (size_t i = 0; i < index; i++) {
+		if (directions[i]->name_n == aaa) {
 			current = directions[i];
 			break;
 		}
 	}
-	size_t instructionIndex = 0;
-	__uint64_t count = 0;
-	u_int64_t zzz = strtoull("ZZZ", NULL, 36);
-	while (current->nameN != zzz)
-	{
+	size_t instruction_index = 0;
+	uint64_t count = 0;
+	uint64_t zzz = strtoull("ZZZ", NULL, 36);
+	while (current->name_n != zzz) {
 		count++;
-		size_t i = 0;
-		switch (instructions[instructionIndex])
-		{
-		case 'L':
-			current = directions[lookup[current->leftN]];
-			instructionIndex = (instructionIndex + 1) % instructionCount;
-			break;
-		case 'R':
-			current = directions[lookup[current->rightN]];
-			instructionIndex = (instructionIndex + 1) % instructionCount;
-			break;
+		switch (instructions[instruction_index]) {
+			case 'L':
+				current = directions[lookup[current->left_n]];
+				instruction_index = (instruction_index + 1) % instruction_count;
+				break;
+			case 'R':
+				current = directions[lookup[current->right_n]];
+				instruction_index = (instruction_index + 1) % instruction_count;
+				break;
 		}
 	}
-	printf("%llu\n", count);
+	printf("%lu\n", count);
 
 	size_t a_count = 0;
-	for (size_t i = 0; i < index; i++)
-	{
-		if (directions[i]->lastName == 'A')
-		{
+	for (size_t i = 0; i < index; i++) {
+		if (directions[i]->last_name == 'A') {
 			a_count++;
 		}
 	}
-	direction **part_two = malloc(sizeof(direction *) * a_count);
+	Direction **part_two = malloc(sizeof(Direction *) * a_count);
 	size_t a_index = 0;
-	for (size_t i = 0; i < index; i++)
-	{
-		if (directions[i]->lastName == 'A')
-		{
+	for (size_t i = 0; i < index; i++) {
+		if (directions[i]->last_name == 'A') {
 			part_two[a_index] = directions[i];
 			a_index++;
 		}
 	}
-	instructionIndex = 0;
-	u_int64_t all_steps[a_count];
-	for (size_t j = 0; j < a_count; j++)
-	{
-		instructionIndex = 0;
+	uint64_t all_steps[a_count];
+	for (size_t j = 0; j < a_count; j++) {
+		instruction_index = 0;
 		int steps = 0;
-		while (part_two[j]->lastName != 'Z')
-		{
+		while (part_two[j]->last_name != 'Z') {
 			steps++;
-			int found = 0;
-			size_t i = 0;
-			switch (instructions[instructionIndex])
-			{
-			case 'L':
-				part_two[j] = directions[lookup[part_two[j]->leftN]];
-				instructionIndex = (instructionIndex + 1) % instructionCount;
-				break;
-			case 'R':
-				part_two[j] = directions[lookup[part_two[j]->rightN]];
-				instructionIndex = (instructionIndex + 1) % instructionCount;
-				break;
+			switch (instructions[instruction_index]) {
+				case 'L':
+					part_two[j] = directions[lookup[part_two[j]->left_n]];
+					instruction_index = (instruction_index + 1) % instruction_count;
+					break;
+				case 'R':
+					part_two[j] = directions[lookup[part_two[j]->right_n]];
+					instruction_index = (instruction_index + 1) % instruction_count;
+					break;
 			}
 		}
 		all_steps[j] = steps;
 	}
-	for (size_t i = 0; i < index; i++)
-	{
+	for (size_t i = 0; i < index; i++) {
 		free(directions[i]);
 	}
 	free(lookup);
 	free(directions);
 	free(part_two);
-	u_int64_t result = 1;
-	for (size_t i = 0; i < a_count; i++)
-	{
-		result = lcm(result, all_steps[i]);
+	uint64_t result = 1;
+	for (size_t i = 0; i < a_count; i++) {
+		result = Lcm(result, all_steps[i]);
 	}
-	printf("%llu\n", result);
+	printf("%lu\n", result);
 }
