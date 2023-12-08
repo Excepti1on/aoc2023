@@ -51,6 +51,6 @@ void Day2() {
 		i++;
 	}
 	fclose(file);
-	printf("%llu\n", count);
-	printf("%llu\n", sum);
+	printf("%lu\n", count);
+	printf("%lu\n", sum);
 }

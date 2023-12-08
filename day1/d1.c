@@ -21,7 +21,37 @@ typedef enum Mode {
  * @param buffer the buffer to read from
  * @return the index of the digit.
  */
-size_t CheckDigit(Mode mode, size_t buffer_length, const char buffer[static buffer_length]) {
+static size_t CheckDigit(Mode mode, size_t buffer_length, const char buffer[static buffer_length]);
+
+/**
+ * Writes the first or last digit written as a word into number.
+ * Requires
+ * CheckDigit()
+ * to be run first.
+ * @param mode the mode of operation, can be FORWADS or BACKWARDS
+ * @param index_digit the index returned by CheckDigit()
+ * @param buffer_length the size of the buffer to read from
+ * @param buffer the buffer to read from
+ * @param number [out] the number to write to
+ * @param alpha_numbers the digits 0-9 in alphabetical form.
+ */
+static void CheckAlpha(Mode mode,
+					   size_t index_digit,
+					   size_t buffer_length,
+					   const char *buffer,
+					   char *number,
+					   const char alpha_numbers[10][6]);
+
+static uint64_t Day1Part1();
+
+static uint64_t Day1Part2();
+
+void Day1() {
+	printf("%lu\n", Day1Part1());
+	printf("%lu\n", Day1Part2());
+}
+
+size_t CheckDigit(Mode mode, size_t buffer_length, const char *buffer) {
 	size_t index_digit;
 	switch (mode) {
 		case FORWARD:
@@ -46,24 +76,12 @@ size_t CheckDigit(Mode mode, size_t buffer_length, const char buffer[static buff
 	return index_digit;
 }
 
-/**
- * Writes the first or last digit written as a word into number.
- * Requires
- * CheckDigit()
- * to be run first.
- * @param mode the mode of operation, can be FORWADS or BACKWARDS
- * @param index_digit the index returned by CheckDigit()
- * @param buffer_length the size of the buffer to read from
- * @param buffer the buffer to read from
- * @param number [out] the number to write to
- * @param alpha_numbers the digits 0-9 in alphabetical form.
- */
 void CheckAlpha(Mode mode,
 				size_t index_digit,
 				size_t buffer_length,
 				const char *buffer,
 				char *number,
-				const char alpha_numbers[10][6]) {
+				const char (*alpha_numbers)[6]) {
 	size_t k;
 	uint64_t index_alpha;
 	switch (mode) {
@@ -84,18 +102,18 @@ void CheckAlpha(Mode mode,
 			return;
 		case BACKWARDS:
 			index_alpha = 0;
-			k = buffer_length-1;
+			k = buffer_length - 1;
 			bool set = false;
 			do {
 				for (size_t l = 0; l < 10; ++l) {
-					uint32_t result = strncmp(buffer+k, alpha_numbers[l], strlen(alpha_numbers[l]));
-					if(result!=0){
+					uint32_t result = strncmp(buffer + k, alpha_numbers[l], strlen(alpha_numbers[l]));
+					if (result != 0) {
 						continue;
 					}
-					if(k > index_digit){
-						if(k > index_alpha){
+					if (k > index_digit) {
+						if (k > index_alpha) {
 							index_alpha = k;
-							number[1] = (l+48);
+							number[1] = (char) (l + 48);
 							set = true;
 						}
 					}
@@ -106,13 +124,10 @@ void CheckAlpha(Mode mode,
 				k--;
 			} while (k != 0);
 			return;
-		default:
-			return;
 	}
 }
 
-uint64_t D11() {
-
+uint64_t Day1Part1() {
 	FILE *file = fopen("../day1/input.txt", "r");
 	char buffer[64] = {};
 	uint64_t result = 0;
@@ -129,7 +144,7 @@ uint64_t D11() {
 	return result;
 }
 
-uint64_t D12() {
+uint64_t Day1Part2() {
 	FILE *file = fopen("../day1/input.txt", "r");
 	uint64_t result = 0;
 	char buffer[64] = {};
@@ -148,9 +163,4 @@ uint64_t D12() {
 	}
 	fclose(file);
 	return result;
-}
-
-void Day1() {
-	printf("%llu\n", D11());
-	printf("%llu\n", D12());
 }

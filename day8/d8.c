@@ -6,22 +6,15 @@
 #include <stdint.h>
 
 typedef struct direction {
-	uint64_t left_n;
-	uint64_t right_n;
-	uint64_t name_n;
+	uint64_t left;
+	uint64_t right;
+	uint64_t name;
 	char last_name;
 } Direction;
 
-uint64_t Gcd(uint64_t a, uint64_t b) {
-	if (b == 0) {
-		return a;
-	}
-	return Gcd(b, a % b);
-}
+static uint64_t Gcd(uint64_t a, uint64_t b);
 
-uint64_t Lcm(uint64_t a, uint64_t b) {
-	return (a / Gcd(a, b)) * b;
-}
+static uint64_t Lcm(uint64_t a, uint64_t b);
 
 void Day8() {
 	FILE *file = fopen("../day8/input.txt", "r");
@@ -39,24 +32,24 @@ void Day8() {
 		directions[index] = malloc(sizeof(Direction));
 		strncpy(temp, buffer, 3);
 		directions[index]->last_name = temp[2];
-		directions[index]->name_n = strtoull(temp, NULL, 36);
+		directions[index]->name = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 7, 3);
-		directions[index]->left_n = strtoull(temp, NULL, 36);
+		directions[index]->left = strtoull(temp, NULL, 36);
 		strncpy(temp, buffer + 12, 3);
-		directions[index]->right_n = strtoull(temp, NULL, 36);
+		directions[index]->right = strtoull(temp, NULL, 36);
 		index++;
 	}
 	fclose(file);
 
 	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
 	for (size_t i = 0; i < index; i++) {
-		lookup[directions[i]->name_n] = i;
+		lookup[directions[i]->name] = i;
 	}
 
 	Direction *current = directions[0];
 	uint64_t aaa = strtoull("AAA", NULL, 36);
 	for (size_t i = 0; i < index; i++) {
-		if (directions[i]->name_n == aaa) {
+		if (directions[i]->name == aaa) {
 			current = directions[i];
 			break;
 		}
@@ -64,15 +57,15 @@ void Day8() {
 	size_t instruction_index = 0;
 	uint64_t count = 0;
 	uint64_t zzz = strtoull("ZZZ", NULL, 36);
-	while (current->name_n != zzz) {
+	while (current->name != zzz) {
 		count++;
 		switch (instructions[instruction_index]) {
 			case 'L':
-				current = directions[lookup[current->left_n]];
+				current = directions[lookup[current->left]];
 				instruction_index = (instruction_index + 1) % instruction_count;
 				break;
 			case 'R':
-				current = directions[lookup[current->right_n]];
+				current = directions[lookup[current->right]];
 				instruction_index = (instruction_index + 1) % instruction_count;
 				break;
 		}
@@ -101,11 +94,11 @@ void Day8() {
 			steps++;
 			switch (instructions[instruction_index]) {
 				case 'L':
-					part_two[j] = directions[lookup[part_two[j]->left_n]];
+					part_two[j] = directions[lookup[part_two[j]->left]];
 					instruction_index = (instruction_index + 1) % instruction_count;
 					break;
 				case 'R':
-					part_two[j] = directions[lookup[part_two[j]->right_n]];
+					part_two[j] = directions[lookup[part_two[j]->right]];
 					instruction_index = (instruction_index + 1) % instruction_count;
 					break;
 			}
@@ -123,4 +116,14 @@ void Day8() {
 		result = Lcm(result, all_steps[i]);
 	}
 	printf("%lu\n", result);
+}
+
+uint64_t Gcd(uint64_t a, uint64_t b) {
+	if (b == 0) {
+		return a;
+	}
+	return Gcd(b, a % b);
+}
+uint64_t Lcm(uint64_t a, uint64_t b) {
+	return (a / Gcd(a, b)) * b;
 }

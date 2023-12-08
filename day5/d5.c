@@ -22,9 +22,9 @@ void Day5() {
 	for (size_t i = 0; i < SEED_COUNT; ++i) {
 		numbers[i] = strtoll(pch, &pch, 10);
 	}
-	uint64_t seedCount = 0;
+	uint64_t seed_count = 0;
 	for (size_t i = 1; i < SEED_COUNT; i += 2) {
-		seedCount += numbers[i];
+		seed_count += numbers[i];
 	}
 	uint32_t category = 0;
 	int64_t almanac[SEED_COUNT][8] = {{}};
@@ -69,12 +69,12 @@ void Day5() {
 		int64_t nums = numbers[x + 1];
 		uint32_t *check = calloc(nums * 2, sizeof(uint32_t));
 		for (int j = 0; j < nums; ++j) {
-			check[j+nums] = numbers[x] + j;
+			check[j + nums] = numbers[x] + j;
 		}
 		category = 0;
 		fgets(buffer, sizeof buffer, file);
-		uint64_t block_count = numbers[x+1]/BLOCK_SIZE;
-		uint64_t last_block = numbers[x+1]%BLOCK_SIZE;
+		uint64_t block_count = numbers[x + 1] / BLOCK_SIZE;
+		uint64_t last_block = numbers[x + 1] % BLOCK_SIZE;
 		while (fgets(buffer, sizeof buffer, file) != NULL) {
 			int64_t map[3] = {};
 			if (buffer[0] == '\n') {
@@ -93,28 +93,25 @@ void Day5() {
 			}
 			int64_t diff = map[0] - map[1];
 
-			#pragma omp parallel for simd collapse(2)
-			for (size_t i = 0; i < block_count-1; i++)
-			{
-				for (size_t j = 0; j < BLOCK_SIZE; j++)
-				{
+#pragma omp parallel for simd collapse(2)
+			for (size_t i = 0; i < block_count - 1; i++) {
+				for (size_t j = 0; j < BLOCK_SIZE; j++) {
 					insanity++;
-					if (check[i*BLOCK_SIZE + j] >= map[1]
-					&& check[i*BLOCK_SIZE + j] < map[1] + map[2]) {
-					check[i*BLOCK_SIZE + j + nums] += diff;
+					if (check[i * BLOCK_SIZE + j] >= map[1]
+						&& check[i * BLOCK_SIZE + j] < map[1] + map[2]) {
+						check[i * BLOCK_SIZE + j + nums] += diff;
 					}
 				}
-				
+
 			}
-			#pragma omp for simd
-			for (size_t i = 0; i < last_block; i++)
-			{
+#pragma omp for simd
+			for (size_t i = 0; i < last_block; i++) {
 				if (check[i] >= map[1]
 					&& check[i] < map[1] + map[2]) {
 					check[i + nums] += diff;
 				}
 			}
-			
+
 		}
 		rewind(file);
 		min = INT64_MAX;
