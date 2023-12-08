@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
 		Day4();
 		//Day5();
 		Day6();
+		Day7();
 		return EXIT_SUCCESS;
 	}
 
