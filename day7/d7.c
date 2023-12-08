@@ -1,5 +1,3 @@
-
-
 #include "d7.h"
 
 #include <stdio.h>
@@ -7,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-
 #define MAX(a, b) (((a)>(b))?(a):(b))
 
 typedef struct CardGame {
@@ -15,6 +12,8 @@ typedef struct CardGame {
 	uint64_t bid;
 	uint64_t rank;
 } CardGame;
+
+static bool part2 = false;
 
 typedef enum CardValues {
 	HIGH_CARD,
@@ -26,7 +25,7 @@ typedef enum CardValues {
 	FIVE,
 } CardValues;
 
-int CardValue(CardGame *card, size_t n) {
+int64_t CardValue(CardGame *card, size_t n) {
 	if (isdigit(card->hand[n])) {
 		return card->hand[n] - '0' - 2;
 	} else {
@@ -34,12 +33,24 @@ int CardValue(CardGame *card, size_t n) {
 			case 'T':
 				return 8;
 			case 'J':
+				if (part2) {
+					return -1;
+				}
 				return 9;
 			case 'Q':
+				if (part2) {
+					return 9;
+				}
 				return 10;
 			case 'K':
+				if (part2) {
+					return 10;
+				}
 				return 11;
 			case 'A':
+				if (part2) {
+					return 11;
+				}
 				return 12;
 			default:
 				break;
@@ -48,29 +59,7 @@ int CardValue(CardGame *card, size_t n) {
 	return -1;
 }
 
-int CardValue2(CardGame *card, size_t n) {
-	if (isdigit(card->hand[n])) {
-		return card->hand[n] - '0' - 2;
-	} else {
-		switch (card->hand[n]) {
-			case 'T':
-				return 8;
-			case 'J':
-				return -1;
-			case 'Q':
-				return 9;
-			case 'K':
-				return 10;
-			case 'A':
-				return 11;
-			default:
-				break;
-		}
-	}
-	return -1;
-}
-
-int Comparefun(const void *p1, const void *p2) {
+int32_t Comparefun(const void *p1, const void *p2) {
 	CardGame *c1 = *(CardGame **) p1;
 	CardGame *c2 = *(CardGame **) p2;
 	if (c1->rank > c2->rank) {
@@ -84,27 +73,6 @@ int Comparefun(const void *p1, const void *p2) {
 			} else if (CardValue(c1, i) < CardValue(c2, i)) {
 				return -1;
 			} else if (CardValue(c1, i) > CardValue(c2, i)) {
-				return 1;
-			}
-		}
-	}
-	return 0;
-}
-
-int Comparefun2(const void *p1, const void *p2) {
-	CardGame *c1 = *(CardGame **) p1;
-	CardGame *c2 = *(CardGame **) p2;
-	if (c1->rank > c2->rank) {
-		return 1;
-	} else if (c1->rank < c2->rank) {
-		return -1;
-	} else if (c1->rank == c2->rank) {
-		for (size_t i = 0; i < 5; i++) {
-			if (CardValue2(c1, i) == CardValue2(c2, i)) {
-				continue;
-			} else if (CardValue2(c1, i) < CardValue2(c2, i)) {
-				return -1;
-			} else if (CardValue2(c1, i) > CardValue2(c2, i)) {
 				return 1;
 			}
 		}
@@ -251,17 +219,18 @@ void Day7() {
 		game[i]->bid = strtoull(pch, NULL, 10);
 		CheckValue(game[i]);
 	}
-	qsort(game, lines, sizeof(CardGame*), Comparefun);
+	qsort(game, lines, sizeof(CardGame *), Comparefun);
 	uint64_t result = 0;
 	for (size_t i = 0; i < lines; i++) {
 		result += game[i]->bid * (i + 1);
 	}
 	printf("Result Part one: %lu\n", result);
 
+	part2 = true;
 	for (size_t i = 0; i < lines; i++) {
 		CheckValue2(game[i]);
 	}
-	qsort(game, lines, sizeof(CardGame*), Comparefun2);
+	qsort(game, lines, sizeof(CardGame *), Comparefun);
 	result = 0;
 	for (size_t i = 0; i < lines; i++) {
 		result += game[i]->bid * (i + 1);
