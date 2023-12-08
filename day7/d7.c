@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 #define MAX(a, b) (((a)>(b))?(a):(b))
 
 typedef struct CardGame {
@@ -12,8 +13,6 @@ typedef struct CardGame {
 	uint64_t bid;
 	uint64_t rank;
 } CardGame;
-
-static bool part2 = false;
 
 typedef enum HandValues {
 	HIGH_CARD,
@@ -25,60 +24,62 @@ typedef enum HandValues {
 	FIVE,
 } HandValues;
 
-int64_t CardValue(CardGame *card, size_t n) {
-	if (isdigit(card->hand[n])) {
-		return card->hand[n] - '0' - 2;
-	} else {
-		switch (card->hand[n]) {
-			case 'T':
-				return 8;
-			case 'J':
-				if (part2) {
-					return -1;
-				}
-				return 9;
-			case 'Q':
-				if (part2) {
-					return 9;
-				}
-				return 10;
-			case 'K':
-				if (part2) {
-					return 10;
-				}
-				return 11;
-			case 'A':
-				if (part2) {
-					return 11;
-				}
-				return 12;
-			default:
-				break;
+static bool part2 = false;
+
+static int64_t CardValue(CardGame *card, size_t n);
+static int32_t CompareFunction(const void *p1, const void *p2);
+static void HandValue(CardGame *card);
+
+void Day7() {
+	//Input parsing
+	FILE *file = fopen("../day7/input.txt", "r");
+	char buffer[32];
+	char ch;
+	size_t lines = 1;
+	while (!feof(file)) {
+		ch = (char) fgetc(file);
+		if (ch == '\n') {
+			lines++;
 		}
 	}
-	return -1;
+	rewind(file);
+	CardGame **game = malloc(sizeof(CardGame *) * lines);
+	for (size_t i = 0; i < lines; i++) {
+		if (fgets(buffer, sizeof buffer, file) == NULL) {
+			break;
+		}
+		char *pch = strtok(buffer, " ");
+		game[i] = malloc(sizeof(CardGame));
+		strcpy(game[i]->hand, pch);
+		pch = strtok(NULL, " \n");
+		game[i]->bid = strtoull(pch, NULL, 10);
+		//belongs to part 1
+		HandValue(game[i]);
+	}
+
+	//part 1:
+	qsort(game, lines, sizeof(CardGame *), CompareFunction);
+	uint64_t result = 0;
+	for (size_t i = 0; i < lines; i++) {
+		result += game[i]->bid * (i + 1);
+	}
+	printf("Result Part one: %lu\n", result);
+
+	//part 2:
+	part2 = true;
+	for (size_t i = 0; i < lines; i++) {
+		HandValue(game[i]);
+	}
+	qsort(game, lines, sizeof(CardGame *), CompareFunction);
+	result = 0;
+	for (size_t i = 0; i < lines; i++) {
+		result += game[i]->bid * (i + 1);
+		free(game[i]);
+	}
+	free(game);
+	printf("Result Part two: %lu\n", result);
 }
 
-int32_t CompareFunction(const void *p1, const void *p2) {
-	CardGame *c1 = *(CardGame **) p1;
-	CardGame *c2 = *(CardGame **) p2;
-	if (c1->rank > c2->rank) {
-		return 1;
-	} else if (c1->rank < c2->rank) {
-		return -1;
-	} else if (c1->rank == c2->rank) {
-		for (size_t i = 0; i < 5; i++) {
-			if (CardValue(c1, i) == CardValue(c2, i)) {
-				continue;
-			} else if (CardValue(c1, i) < CardValue(c2, i)) {
-				return -1;
-			} else if (CardValue(c1, i) > CardValue(c2, i)) {
-				return 1;
-			}
-		}
-	}
-	return 0;
-}
 void HandValue(CardGame *card) {
 	char cards[13] = {};
 	uint64_t value = 0;
@@ -182,53 +183,57 @@ void HandValue(CardGame *card) {
 	card->rank = value;
 }
 
-void Day7() {
-
-	//Input parsing
-	FILE *file = fopen("../day7/input.txt", "r");
-	char buffer[32];
-	char ch;
-	size_t lines = 1;
-	while (!feof(file)) {
-		ch = (char) fgetc(file);
-		if (ch == '\n') {
-			lines++;
+int32_t CompareFunction(const void *p1, const void *p2) {
+	CardGame *c1 = *(CardGame **) p1;
+	CardGame *c2 = *(CardGame **) p2;
+	if (c1->rank > c2->rank) {
+		return 1;
+	} else if (c1->rank < c2->rank) {
+		return -1;
+	} else if (c1->rank == c2->rank) {
+		for (size_t i = 0; i < 5; i++) {
+			if (CardValue(c1, i) == CardValue(c2, i)) {
+				continue;
+			} else if (CardValue(c1, i) < CardValue(c2, i)) {
+				return -1;
+			} else if (CardValue(c1, i) > CardValue(c2, i)) {
+				return 1;
+			}
 		}
 	}
-	rewind(file);
-	CardGame **game = malloc(sizeof(CardGame *) * lines);
-	for (size_t i = 0; i < lines; i++) {
-		if (fgets(buffer, sizeof buffer, file) == NULL) {
-			break;
+	return 0;
+}
+
+int64_t CardValue(CardGame *card, size_t n) {
+	if (isdigit(card->hand[n])) {
+		return card->hand[n] - '0' - 2;
+	} else {
+		switch (card->hand[n]) {
+			case 'T':
+				return 8;
+			case 'J':
+				if (part2) {
+					return -1;
+				}
+				return 9;
+			case 'Q':
+				if (part2) {
+					return 9;
+				}
+				return 10;
+			case 'K':
+				if (part2) {
+					return 10;
+				}
+				return 11;
+			case 'A':
+				if (part2) {
+					return 11;
+				}
+				return 12;
+			default:
+				break;
 		}
-		char *pch = strtok(buffer, " ");
-		game[i] = malloc(sizeof(CardGame));
-		strcpy(game[i]->hand, pch);
-		pch = strtok(NULL, " \n");
-		game[i]->bid = strtoull(pch, NULL, 10);
-		//belongs to part 1
-		HandValue(game[i]);
 	}
-
-	//part 1:
-	qsort(game, lines, sizeof(CardGame *), CompareFunction);
-	uint64_t result = 0;
-	for (size_t i = 0; i < lines; i++) {
-		result += game[i]->bid * (i + 1);
-	}
-	printf("Result Part one: %lu\n", result);
-
-	//part 2:
-	part2 = true;
-	for (size_t i = 0; i < lines; i++) {
-		HandValue(game[i]);
-	}
-	qsort(game, lines, sizeof(CardGame *), CompareFunction);
-	result = 0;
-	for (size_t i = 0; i < lines; i++) {
-		result += game[i]->bid * (i + 1);
-		free(game[i]);
-	}
-	free(game);
-	printf("Result Part two: %lu\n", result);
+	return -1;
 }
