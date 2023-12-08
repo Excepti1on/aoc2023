@@ -185,7 +185,6 @@ void CheckValue2(CardGame * card){
             value = MAX(value,HIGH_CARD);
         }
     }
-    printf("Card Value: %llu\n", value);
     card->rank = value;
 }
 void CheckValue(CardGame *card){
@@ -248,7 +247,6 @@ void CheckValue(CardGame *card){
             value = MAX(value,HIGH_CARD);
         }
     }
-    printf("Card Value: %llu\n", value);
     card->rank = value;
 }
 
@@ -281,7 +279,6 @@ void Day7(){
     uint64_t result = 0;
     for (size_t i = 0; i < lines; i++)
     {
-        printf("Bid:%llu\n", game[i]->bid);
         result += game[i]->bid * (i+1);
     }
     printf("Result Part one: %llu\n", result);
@@ -294,7 +291,6 @@ void Day7(){
     result = 0;
     for (size_t i = 0; i < lines; i++)
     {
-        printf("Card:%llu %s\n", game[i]->rank, game[i]->hand);
         result += game[i]->bid * (i+1);
     }
     printf("Result Part two: %llu\n", result);
