@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 
-set(CMAKE_C_FLAGS "-g -march=native -fopenmp")
+set(CMAKE_C_FLAGS "-g -O3 -march=native -fopenmp")
 
 add_library(day1 OBJECT day1/d1.c day1/d1.h)
 
@@ -26,6 +26,8 @@ add_library(day7 OBJECT day7/d7.c day7/d7.h)
 
 add_library(day8 OBJECT day8/d8.c day8/d8.h)
 
+add_library(day9 OBJECT day9/d9.c day9/d9.h)
+
 add_executable(${PROJECT_NAME} main.c)
 
-target_link_libraries(${PROJECT_NAME} day1 day2 day3 day4 day5 day6 day7 day8)
+target_link_libraries(${PROJECT_NAME} day1 day2 day3 day4 day5 day6 day7 day8 day9)
