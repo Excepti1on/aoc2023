@@ -64,11 +64,9 @@ int main(int argc, char *argv[]) {
 			case '9':
 				Day9();
 				break;
-
 			default:
 				break;
 		}
 	}
-
 	return EXIT_SUCCESS;
 }

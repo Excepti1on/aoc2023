@@ -84,7 +84,8 @@ void HandValue(CardGame *card) {
 	char cards[13] = {};
 	uint64_t value = 0;
 	uint64_t jokers = 0;
-	for (size_t i = 0; i < strlen(card->hand); i++) {
+	size_t len = strlen(card->hand);
+	for (size_t i = 0; i < len; i++) {
 		if (isdigit(card->hand[i])) {
 			cards[(card->hand[i] - '0' - 2)]++;
 		} else if (isalpha(card->hand[i])) {
