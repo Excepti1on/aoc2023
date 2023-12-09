@@ -60,7 +60,7 @@ void Day5() {
 	for (int i = 0; i < SEED_COUNT; ++i) {
 		min = MIN(min, almanac[i][7]);
 	}
-	printf("%lld\n", min);
+	printf("Lowest Location: %lld\n", min);
 
 	size_t insanity = 0;
 	int64_t min2 = INT64_MAX;
@@ -119,7 +119,7 @@ void Day5() {
 			min = MIN(min, check[i + nums]);
 		}
 		min2 = MIN(min, min2);
-		printf("%lld\n", min2);
+		printf("Lowest Location Part 2: %lld\n", min2);
 		free(check);
 	}
 	printf("Insanity: %zu\n", insanity);

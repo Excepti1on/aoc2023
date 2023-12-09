@@ -51,6 +51,6 @@ void Day3() {
 			part_two += (gear_count == 2) * gear_ratio;
 		}
 	}
-	printf("%lu\n", part_one);
-	printf("%lu\n", part_two);
+	printf("Sum of Part Numbers: %lu\n", part_one);
+	printf("Sum of Gear Ratios: %lu\n", part_two);
 }

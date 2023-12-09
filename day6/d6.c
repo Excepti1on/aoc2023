@@ -90,6 +90,6 @@ void Day6() {
 			break;
 		}
 	}
-	printf("Part 2, 1 Race: %lu\nBegin: %lu\n End: %lu\n", end - begin, begin, end);
+	printf("Part 2, 1 Race: %lu", end - begin);
 
 }

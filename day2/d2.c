@@ -51,6 +51,6 @@ void Day2() {
 		i++;
 	}
 	fclose(file);
-	printf("%lu\n", count);
-	printf("%lu\n", sum);
+	printf("Sum of IDs: %lu\n", count);
+	printf("Sum of Power of the Games: %lu\n", sum);
 }

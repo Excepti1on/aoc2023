@@ -47,8 +47,8 @@ static uint64_t Day1Part1();
 static uint64_t Day1Part2();
 
 void Day1() {
-	printf("%lu\n", Day1Part1());
-	printf("%lu\n", Day1Part2());
+	printf("Sum of Calibration Part One: %lu\n", Day1Part1());
+	printf("Sum of Calibration Part Two: %lu\n", Day1Part2());
 }
 
 size_t CheckDigit(Mode mode, size_t buffer_length, const char *buffer) {

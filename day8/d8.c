@@ -67,7 +67,7 @@ void Day8() {
 				break;
 		}
 	}
-	printf("%lu\n", count);
+	printf("Steps Part One: %lu\n", count);
 
 	size_t a_count = 0;
 	for (size_t i = 0; i < index; i++) {
@@ -112,7 +112,7 @@ void Day8() {
 	for (size_t i = 0; i < a_count; i++) {
 		result = Lcm(result, all_steps[i]);
 	}
-	printf("%lu\n", result);
+	printf("Steps part Two: %lu\n", result);
 }
 
 uint64_t Gcd(uint64_t a, uint64_t b) {
