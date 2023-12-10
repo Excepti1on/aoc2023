@@ -90,8 +90,6 @@ void Day10() {
 		case 6:
 			s = 'L';
 			break;
-		default:
-			break;
 	}
 
 	//Walk the loop
@@ -149,20 +147,16 @@ void Day10() {
 					last_move = DOWN;
 				}
 				break;
-			default:
-				printf("error");
-				break;
 		}
 		result++;
 	}
 	//result/2 because the loop is double the longest step Count
 	printf("%d\n", result / 2);
-
-	//don't ask me why it works
+	buffer[start_y][start_x] = s;
 	int count = 0;
 	for (int i = 0; i < SIZE_Y; ++i) {
-		for (int j = 0; j < SIZE_X; ++j) {
-			int below = -1;
+		for (int j = 1; j < SIZE_X; ++j) {
+			int below;
 			//if we are on a visited pipe we cant be inside
 			if (visited[i][j] == 1) {
 				continue;
@@ -170,32 +164,21 @@ void Day10() {
 			//ray cast to the right
 			int intersections = 0;
 			for (int k = j; k < SIZE_X; ++k) {
-				//the first column cant be inside, I don't know why it sometimes thinks it is
-				if (k == 0) {
-					break;
-				}
-				again:
 				//we have hit a possible intersection
 				if (visited[i][k] == 1) {
 					// track if we came from below, only if we exit up do we have an intersections
-					if (buffer[i][k] == 'F') {
-						below = 1;
-					} else if (buffer[i][k] == 'L') {
-						below = 0;
-					} else if (buffer[i][k] == 'J' && below == 1
+					if (buffer[i][k] == 'J' && below == 1
 						|| buffer[i][k] == '7' && below == 0
 						|| buffer[i][k] == '|') {
 						intersections++;
-					} else if (buffer[i][k] == 'S') { //scuffed but works
-						buffer[i][k] = s;
-						goto again;
+					} else if (buffer[i][k] == 'L') {
+						below = 0;
+					} else if (buffer[i][k] == 'F') {
+						below = 1;
 					}
 				}
 			}
-			if (intersections % 2 != 0 && intersections != 0) {
-				count++;
-				visited[i][j] = 2;
-			}
+			count += intersections % 2;
 		}
 	}
 	printf("Inside Tiles: %d\n", count);
