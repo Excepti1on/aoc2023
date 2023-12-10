@@ -161,7 +161,7 @@ void Day10() {
 	//don't ask me why it works
 	int count = 0;
 	for (int i = 0; i < SIZE_Y; ++i) {
-		for (int j = 0; j < SIZE_X; ++j) {
+		for (int j = 1; j < SIZE_X; ++j) {
 			int below = -1;
 			//if we are on a visited pipe we cant be inside
 			if (visited[i][j] == 1) {
@@ -170,10 +170,6 @@ void Day10() {
 			//ray cast to the right
 			int intersections = 0;
 			for (int k = j; k < SIZE_X; ++k) {
-				//the first column cant be inside, I don't know why it sometimes thinks it is
-				if (k == 0) {
-					break;
-				}
 				again:
 				//we have hit a possible intersection
 				if (visited[i][k] == 1) {
