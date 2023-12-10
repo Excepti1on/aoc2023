@@ -8,8 +8,8 @@
 typedef enum Move {
 	UP,
 	RIGHT,
-	DOWN,
-	LEFT
+	DOWN = 2,
+	LEFT = 4
 } Move;
 
 #define SIZE_X 140
@@ -36,25 +36,64 @@ void Day10() {
 		}
 	}
 	visited[y][x] = 1;
+	int start_x = x;
+	int start_y = y;
+
+	char s = 'S';
 	//Find Where to go from S
 	int last_move;
-	if (buffer[y - 1][x] == '|' || buffer[y - 1][x] == 'F' || buffer[y - 1][x] == '7') {
-		x = x;
-		y = y - 1;
+	int possibilities = 0;
+	if (buffer[start_y - 1][start_x] == '|' || buffer[start_y - 1][start_x] == 'F'
+		|| buffer[start_y - 1][start_x] == '7') {
+		x = start_x;
+		y = start_y - 1;
 		last_move = UP;
-	} else if (buffer[y][x + 1] == '-' || buffer[y][x + 1] == '7' || buffer[y][x + 1] == 'J') {
-		x = x + 1;
-		y = y;
-		last_move = RIGHT;
-	} else if (buffer[y + 1][x] == '|' || buffer[y + 1][x] == 'F' || buffer[y + 1][x] == '7') {
-		x = x;
-		y = y + 1;
-		last_move = DOWN;
-	} else if (buffer[y][x - 1] == '-' || buffer[y][x - 1] == 'L' || buffer[y][x - 1] == 'F') {
-		x = x - 1;
-		y = y;
-		last_move = LEFT;
+		possibilities |= UP;
 	}
+	if (buffer[start_y][start_x + 1] == '-' || buffer[start_y][start_x + 1] == '7'
+		|| buffer[start_y][start_x + 1] == 'J') {
+		x = start_x + 1;
+		y = start_y;
+		last_move = RIGHT;
+		possibilities |= RIGHT;
+	}
+	if (buffer[start_y + 1][start_x] == '|' || buffer[start_y + 1][start_x] == 'F'
+		|| buffer[start_y + 1][start_x] == '7') {
+		x = start_x;
+		y = start_y + 1;
+		last_move = DOWN;
+		possibilities |= DOWN;
+	}
+	if (buffer[start_y][start_x - 1] == '-' || buffer[start_y][start_x - 1] == 'L'
+		|| buffer[start_y][start_x - 1] == 'F') {
+		x = start_x - 1;
+		y = start_y;
+		last_move = LEFT;
+		possibilities |= LEFT;
+	}
+	switch (possibilities) {
+		case 1:
+			s = 'L';
+			break;
+		case 2:
+			s = '|';
+			break;
+		case 3:
+			s = 'F';
+			break;
+		case 4:
+			s = 'J';
+			break;
+		case 5:
+			s = '-';
+			break;
+		case 6:
+			s = 'L';
+			break;
+		default:
+			break;
+	}
+
 	//Walk the loop
 	int result = 1;
 	while (buffer[y][x] != 'S') {
@@ -132,9 +171,10 @@ void Day10() {
 			int intersections = 0;
 			for (int k = j; k < SIZE_X; ++k) {
 				//the first column cant be inside, I don't know why it sometimes thinks it is
-				if(k == 0){
+				if (k == 0) {
 					break;
 				}
+				again:
 				//we have hit a possible intersection
 				if (visited[i][k] == 1) {
 					// track if we came from below, only if we exit up do we have an intersections
@@ -142,15 +182,13 @@ void Day10() {
 						below = 1;
 					} else if (buffer[i][k] == 'L') {
 						below = 0;
-					} else if (buffer[i][k] == 'J' && below == 1) {
+					} else if (buffer[i][k] == 'J' && below == 1
+						|| buffer[i][k] == '7' && below == 0
+						|| buffer[i][k] == '|') {
 						intersections++;
-					} else if (buffer[i][k] == '7' && below == 0) {
-						intersections++;
-					} else if (buffer[i][k] == '|') { // default case , it is always an intersection
-						intersections++;
-					} else if(buffer[i][k] == 'S'){ //honestly fuck this case,
-													// may not work with a different input, but it works with mine
-						intersections++;
+					} else if (buffer[i][k] == 'S') { //scuffed but works
+						buffer[i][k] = s;
+						goto again;
 					}
 				}
 			}
