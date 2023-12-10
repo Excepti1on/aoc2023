@@ -6,10 +6,10 @@
 #include <stdio.h>
 
 typedef enum Move {
-	UP,
-	RIGHT,
-	DOWN = 2,
-	LEFT = 4
+	UP = 1,
+	RIGHT = 2,
+	DOWN = 4,
+	LEFT = 8
 } Move;
 
 #define SIZE_X 140
@@ -38,8 +38,6 @@ void Day10() {
 	visited[y][x] = 1;
 	int start_x = x;
 	int start_y = y;
-
-	char s = 'S';
 	//Find Where to go from S
 	int last_move;
 	int possibilities = 0;
@@ -71,24 +69,28 @@ void Day10() {
 		last_move = LEFT;
 		possibilities |= LEFT;
 	}
+	char s;
 	switch (possibilities) {
-		case 1:
+		case 0b0011:
 			s = 'L';
 			break;
-		case 2:
+		case 0b0101:
 			s = '|';
 			break;
-		case 3:
+		case 0b0110:
 			s = 'F';
 			break;
-		case 4:
+		case 0b1001:
 			s = 'J';
 			break;
-		case 5:
+		case 0b1010:
 			s = '-';
 			break;
-		case 6:
-			s = 'L';
+		case 0b1100:
+			s = '7';
+			break;
+		default:
+			s = 'S';
 			break;
 	}
 
