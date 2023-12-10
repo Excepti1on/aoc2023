@@ -4,6 +4,7 @@
 
 #include "d10.h"
 #include <stdio.h>
+#include <stdint.h>
 
 typedef enum Move {
 	UP = 1,
@@ -19,27 +20,27 @@ void Day10() {
 	//read input
 	FILE *file = fopen("../day10/input.txt", "r");
 	char buffer[SIZE_Y][SIZE_X + 2];
-	int visited[SIZE_Y][SIZE_X] = {};
+	bool visited[SIZE_Y][SIZE_X] = {};
 	int x = 0, y = 0;
-	for (int i = 0; i < SIZE_Y; ++i) {
+	for (size_t i = 0; i < SIZE_Y; ++i) {
 		fgets(buffer[i], SIZE_X + 2, file);
 	}
 	fclose(file);
 	//find S
-	for (int i = 0; i < SIZE_Y; ++i) {
-		for (int j = 0; j < SIZE_X; ++j) {
+	for (size_t i = 0; i < SIZE_Y; ++i) {
+		for (size_t j = 0; j < SIZE_X; ++j) {
 			if (buffer[i][j] == 'S') {
-				y = i;
-				x = j;
+				y = (int)i;
+				x = (int)j;
 				break;
 			}
 		}
 	}
-	visited[y][x] = 1;
+	visited[y][x] = true;
 	int start_x = x;
 	int start_y = y;
 	//Find Where to go from S
-	int last_move;
+	uint_fast8_t last_move;
 	int possibilities = 0;
 	if (buffer[start_y - 1][start_x] == '|' || buffer[start_y - 1][start_x] == 'F'
 		|| buffer[start_y - 1][start_x] == '7') {
@@ -93,11 +94,10 @@ void Day10() {
 			s = 'S';
 			break;
 	}
-
 	//Walk the loop
 	int result = 1;
 	while (buffer[y][x] != 'S') {
-		visited[y][x] = 1;
+		visited[y][x] = true;
 		switch (buffer[y][x]) {
 			case '|':
 				if (last_move == UP) {
@@ -155,29 +155,31 @@ void Day10() {
 	//result/2 because the loop is double the longest step Count
 	printf("%d\n", result / 2);
 	buffer[start_y][start_x] = s;
-	int count = 0;
-	for (int i = 0; i < SIZE_Y; ++i) {
-		for (int j = 1; j < SIZE_X; ++j) {
-			int below;
+	auto count = 0;
+	//kind of ray casting to find if a point is inside the shape drawn into visited
+	for (size_t i = 0; i < SIZE_Y; ++i) {
+		for (size_t j = 1; j < SIZE_X; ++j) {
+			int last_direction = RIGHT;
 			//if we are on a visited pipe we cant be inside
-			if (visited[i][j] == 1) {
+			if (visited[i][j]) {
 				continue;
 			}
 			//ray cast to the right
 			int intersections = 0;
-			for (int k = j; k < SIZE_X; ++k) {
+			for (size_t k = j; k < SIZE_X; ++k) {
 				//we have hit a possible intersection
-				if (visited[i][k] == 1) {
-					// track if we came from below, only if we exit up do we have an intersections
-					if (buffer[i][k] == 'J' && below == 1
-						|| buffer[i][k] == '7' && below == 0
-						|| buffer[i][k] == '|') {
-						intersections++;
-					} else if (buffer[i][k] == 'L') {
-						below = 0;
-					} else if (buffer[i][k] == 'F') {
-						below = 1;
-					}
+				if (!visited[i][k]) {
+					continue;
+				}
+				// track if we came from last_direction, only if we exit up do we have an intersections
+				if (buffer[i][k] == '|'
+					|| buffer[i][k] == 'J' && last_direction == UP
+					|| buffer[i][k] == '7' && last_direction == DOWN) {
+					intersections++;
+				} else if (buffer[i][k] == 'F') {
+					last_direction = UP;
+				} else if (buffer[i][k] == 'L') {
+					last_direction = DOWN;
 				}
 			}
 			count += intersections % 2;

@@ -60,12 +60,12 @@ void Day5() {
 	for (int i = 0; i < SEED_COUNT; ++i) {
 		min = MIN(min, almanac[i][7]);
 	}
-	printf("Lowest Location: %lld\n", min);
+	printf("Lowest Location: %ldn", min);
 
 	size_t insanity = 0;
 	int64_t min2 = INT64_MAX;
 	for (int x = 0; x < SEED_COUNT; x += 2) {
-		printf("%lld \t%lld \t %d\t", numbers[x], numbers[x + 1], x);
+		printf("%ld \t%%ld\t %d\t", numbers[x], numbers[x + 1], x);
 		int64_t nums = numbers[x + 1];
 		uint32_t *check = calloc(nums * 2, sizeof(uint32_t));
 		for (int j = 0; j < nums; ++j) {
@@ -119,7 +119,7 @@ void Day5() {
 			min = MIN(min, check[i + nums]);
 		}
 		min2 = MIN(min, min2);
-		printf("Lowest Location Part 2: %lld\n", min2);
+		printf("Lowest Location Part 2: %ld\n", min2);
 		free(check);
 	}
 	printf("Insanity: %zu\n", insanity);
