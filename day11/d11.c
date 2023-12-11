@@ -48,17 +48,16 @@ void Day11() {
 		}
 	}
 	printf("GalaxyCount: %zu\nEmptyRows: %zu\nEmptyCols: %zu\n", galaxy_count, row_count, col_count);
-
-	Galaxy *galaxies = (Galaxy *) malloc(sizeof(Galaxy) * galaxy_count);
-	Galaxy *far_galaxies = (Galaxy *) malloc(sizeof(Galaxy) * galaxy_count);
+	Galaxy *galaxies = malloc(sizeof(Galaxy) * galaxy_count);
+	Galaxy *far_galaxies = malloc(sizeof(Galaxy) * galaxy_count);
 	size_t index = 0;
-	for (size_t i = 0; i < SIZE; i++) {
-		for (size_t j = 0; j < SIZE; j++) {
-			if (buffer[i][j] == '#') {
-				galaxies[index].x = (int64_t) j;
-				galaxies[index].y = (int64_t) i;
-				far_galaxies[index].x = (int64_t) j;
-				far_galaxies[index].y = (int64_t) i;
+	for (size_t y = 0; y < SIZE; y++) {
+		for (size_t x = 0; x < SIZE; x++) {
+			if (buffer[y][x] == '#') {
+				galaxies[index].x = (int64_t) x;
+				galaxies[index].y = (int64_t) y;
+				far_galaxies[index].x = (int64_t) x;
+				far_galaxies[index].y = (int64_t) y;
 				index++;
 			}
 		}
