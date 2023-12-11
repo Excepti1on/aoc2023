@@ -5,15 +5,12 @@
 
 #define SIZE 140
 
-#define EXPANSION 1
-#define EXPANSION2 999998 // THIS SHOULD BE 1000000 WHY DOES IT ONLY WORK WITH 999999
+#define EXPANSION 999999 // THIS SHOULD BE 1000000 WHY DOES IT ONLY WORK WITH 999999
 
 typedef struct Galaxy {
 	int64_t x;
 	int64_t y;
 } Galaxy;
-
-static int64_t Distance(Galaxy *g1, Galaxy *g2);
 
 void Day11() {
 	FILE *file = fopen("../day11/input.txt", "r");
@@ -23,9 +20,9 @@ void Day11() {
 	}
 	fclose(file);
 	bool empty[2][SIZE] = {};
-	int row_count = 0;
-	int col_count = 0;
-	int galaxy_count = 0;
+	size_t row_count = 0;
+	size_t col_count = 0;
+	size_t galaxy_count = 0;
 	for (size_t i = 0; i < SIZE; i++) {
 		for (size_t j = 0; j < SIZE; j++) {
 			if (buffer[i][j] == '#') {
@@ -51,16 +48,20 @@ void Day11() {
 			col_count++;
 		}
 	}
-	printf("GalaxyCount: %d\nEmptyRows: %d\nEmptyCols: %d\n", galaxy_count, row_count, col_count);
+	printf("GalaxyCount: %zu\nEmptyRows: %zu\nEmptyCols: %zu\n", galaxy_count, row_count, col_count);
 
-	Galaxy **galaxies = (Galaxy **) malloc(sizeof(Galaxy *) * galaxy_count);
+	Galaxy **galaxies = (Galaxy **) malloc(sizeof(Galaxy) * galaxy_count);
+	Galaxy **far_galaxies = (Galaxy **) malloc(sizeof(Galaxy) * galaxy_count);
 	int index = 0;
 	for (size_t i = 0; i < SIZE; i++) {
 		for (size_t j = 0; j < SIZE; j++) {
 			if (buffer[i][j] == '#') {
 				galaxies[index] = (Galaxy *) malloc(sizeof(Galaxy));
-				galaxies[index]->x = (int) j;
-				galaxies[index]->y = (int) i;
+				galaxies[index]->x = (int64_t) j;
+				galaxies[index]->y = (int64_t) i;
+				far_galaxies[index] = (Galaxy *) malloc(sizeof(Galaxy));
+				far_galaxies[index]->x = (int64_t) j;
+				far_galaxies[index]->y = (int64_t) i;
 				index++;
 			}
 		}
@@ -69,58 +70,38 @@ void Day11() {
 	size_t count_y = 0;
 	for (size_t i = 0; i < SIZE; i++) {
 		if (empty[1][i]) {
-			for (ssize_t j = 0; j < galaxy_count; j++) {
-				if (galaxies[j]->x >  i + count_x) {
-					galaxies[j]->x += EXPANSION;
+			for (size_t j = 0; j < galaxy_count; j++) {
+				if (galaxies[j]->x > i + count_x) {
+					galaxies[j]->x++;
+					far_galaxies[j]->x += EXPANSION;
 				}
 			}
-			count_x += EXPANSION;
+			count_x++;
 		}
 		if (empty[0][i]) {
-			for (ssize_t j = 0; j < galaxy_count; j++) {
+			for (size_t j = 0; j < galaxy_count; j++) {
 				if (galaxies[j]->y > i + count_y) {
-					galaxies[j]->y += EXPANSION;
+					galaxies[j]->y++;
+					far_galaxies[j]->y += EXPANSION;
 				}
 			}
-			count_y += EXPANSION;
+			count_y++;
 		}
 	}
 	int64_t sum = 0;
+	int64_t sum_far = 0;
 	for (int i = 0; i < galaxy_count - 1; ++i) {
 		for (int j = i + 1; j < galaxy_count; ++j) {
-			sum += Distance(galaxies[i], galaxies[j]);
+			sum += labs(galaxies[i]->x - galaxies[j]->x) + labs(galaxies[i]->y - galaxies[j]->y);
+			sum_far += labs(far_galaxies[i]->x - far_galaxies[j]->x) + labs(far_galaxies[i]->y - far_galaxies[j]->y);
 		}
+		free(galaxies[i]);
+		free(far_galaxies[i]);
 	}
-	printf("%lld\n", sum);
-	count_x = 1;
-	count_y = 1;
-	for (size_t i = 0; i < SIZE; i++) {
-		if (empty[1][i]) {
-			for (ssize_t j = 0; j < galaxy_count; j++) {
-				if (galaxies[j]->x >  i + count_x) {
-					galaxies[j]->x += EXPANSION2;
-				}
-			}
-			count_x += EXPANSION2;
-		}
-		if (empty[0][i]) {
-			for (ssize_t j = 0; j < galaxy_count; j++) {
-				if (galaxies[j]->y > i + count_y) {
-					galaxies[j]->y += EXPANSION2;
-				}
-			}
-			count_y += EXPANSION2;
-		}
-	}
-	sum = 0;
-	for (int i = 0; i < galaxy_count - 1; ++i) {
-		for (int j = i + 1; j < galaxy_count; ++j) {
-			sum += Distance(galaxies[i], galaxies[j]);
-		}
-	}
-	printf("%lld\n", sum);
-
-}
-int64_t Distance(Galaxy *g1, Galaxy *g2) {
-	return llabs(g1->x - g2->x) + llabs(g1->y - g2->y);
+	free(galaxies[galaxy_count]);
+	free(far_galaxies[galaxy_count]);
+	free(galaxies);
+	free(far_galaxies);
+	printf("%ld\n", sum);
+	printf("%ld\n", sum_far);
 }

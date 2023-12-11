@@ -42,7 +42,6 @@ void Day8() {
 		index++;
 	}
 	fclose(file);
-
 	Direction *current = directions[0];
 	uint64_t aaa = strtoull("AAA", NULL, 36);
 	for (size_t i = 0; i < index; i++) {

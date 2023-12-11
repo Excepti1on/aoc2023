@@ -1,6 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
 
 #include "day1/d1.h"
 #include "day2/d2.h"
@@ -35,27 +33,22 @@ int main(int argc, char *argv[]) {
 	}
 
 	while ((++argv)[0]) {
-		switch (atoi(argv[0])) {
+		switch (strtol(argv[0], NULL, 0)) {
 			case 1:
 				Day1();
 				break;
-
 			case 2:
 				Day2();
 				break;
-
 			case 3:
 				Day3();
 				break;
-
 			case 4:
 				Day4();
 				break;
-
 			case 5:
 				Day5();
 				break;
-
 			case 6:
 				Day6();
 				break;

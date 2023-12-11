@@ -91,5 +91,4 @@ void Day6() {
 		}
 	}
 	printf("Part 2, 1 Race: %lu", end - begin);
-
 }
