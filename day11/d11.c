@@ -1,7 +1,6 @@
 #include "d11.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 #define SIZE 140
 
@@ -50,18 +49,16 @@ void Day11() {
 	}
 	printf("GalaxyCount: %zu\nEmptyRows: %zu\nEmptyCols: %zu\n", galaxy_count, row_count, col_count);
 
-	Galaxy **galaxies = (Galaxy **) malloc(sizeof(Galaxy) * galaxy_count);
-	Galaxy **far_galaxies = (Galaxy **) malloc(sizeof(Galaxy) * galaxy_count);
-	int index = 0;
+	Galaxy *galaxies = (Galaxy *) malloc(sizeof(Galaxy) * galaxy_count);
+	Galaxy *far_galaxies = (Galaxy *) malloc(sizeof(Galaxy) * galaxy_count);
+	size_t index = 0;
 	for (size_t i = 0; i < SIZE; i++) {
 		for (size_t j = 0; j < SIZE; j++) {
 			if (buffer[i][j] == '#') {
-				galaxies[index] = (Galaxy *) malloc(sizeof(Galaxy));
-				galaxies[index]->x = (int64_t) j;
-				galaxies[index]->y = (int64_t) i;
-				far_galaxies[index] = (Galaxy *) malloc(sizeof(Galaxy));
-				far_galaxies[index]->x = (int64_t) j;
-				far_galaxies[index]->y = (int64_t) i;
+				galaxies[index].x = (int64_t) j;
+				galaxies[index].y = (int64_t) i;
+				far_galaxies[index].x = (int64_t) j;
+				far_galaxies[index].y = (int64_t) i;
 				index++;
 			}
 		}
@@ -71,18 +68,18 @@ void Day11() {
 	for (size_t i = 0; i < SIZE; i++) {
 		if (empty[1][i]) {
 			for (size_t j = 0; j < galaxy_count; j++) {
-				if (galaxies[j]->x > i + count_x) {
-					galaxies[j]->x++;
-					far_galaxies[j]->x += EXPANSION;
+				if (galaxies[j].x > i + count_x) {
+					galaxies[j].x++;
+					far_galaxies[j].x += EXPANSION;
 				}
 			}
 			count_x++;
 		}
 		if (empty[0][i]) {
 			for (size_t j = 0; j < galaxy_count; j++) {
-				if (galaxies[j]->y > i + count_y) {
-					galaxies[j]->y++;
-					far_galaxies[j]->y += EXPANSION;
+				if (galaxies[j].y > i + count_y) {
+					galaxies[j].y++;
+					far_galaxies[j].y += EXPANSION;
 				}
 			}
 			count_y++;
@@ -90,16 +87,12 @@ void Day11() {
 	}
 	int64_t sum = 0;
 	int64_t sum_far = 0;
-	for (int i = 0; i < galaxy_count - 1; ++i) {
-		for (int j = i + 1; j < galaxy_count; ++j) {
-			sum += labs(galaxies[i]->x - galaxies[j]->x) + labs(galaxies[i]->y - galaxies[j]->y);
-			sum_far += labs(far_galaxies[i]->x - far_galaxies[j]->x) + labs(far_galaxies[i]->y - far_galaxies[j]->y);
+	for (size_t i = 0; i < galaxy_count - 1; ++i) {
+		for (size_t j = i + 1; j < galaxy_count; ++j) {
+			sum += labs(galaxies[i].x - galaxies[j].x) + labs(galaxies[i].y - galaxies[j].y);
+			sum_far += labs(far_galaxies[i].x - far_galaxies[j].x) + labs(far_galaxies[i].y - far_galaxies[j].y);
 		}
-		free(galaxies[i]);
-		free(far_galaxies[i]);
 	}
-	free(galaxies[galaxy_count]);
-	free(far_galaxies[galaxy_count]);
 	free(galaxies);
 	free(far_galaxies);
 	printf("%ld\n", sum);
