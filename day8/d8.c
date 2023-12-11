@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#define LINES 716
+
 typedef struct direction {
 	uint64_t left;
 	uint64_t right;
@@ -18,8 +20,7 @@ static uint64_t Lcm(uint64_t a, uint64_t b);
 
 void Day8() {
 	FILE *file = fopen("../day8/input.txt", "r");
-	const size_t kLines = 716;
-	Direction **directions = malloc(sizeof(Direction *) * (kLines - 2));
+	Direction **directions = malloc(sizeof(Direction *) * (LINES - 2));
 	rewind(file);
 	char instructions[512] = {};
 	fgets(instructions, sizeof instructions, file);
@@ -82,7 +83,7 @@ void Day8() {
 			a_index++;
 		}
 	}
-	uint64_t all_steps[a_count];
+	uint64_t result = 1;
 	for (size_t j = 0; j < a_count; j++) {
 		instruction_index = 0;
 		int steps = 0;
@@ -99,7 +100,7 @@ void Day8() {
 					break;
 			}
 		}
-		all_steps[j] = steps;
+		result = Lcm(result, steps);
 	}
 	for (size_t i = 0; i < index; i++) {
 		free(directions[i]);
@@ -107,10 +108,6 @@ void Day8() {
 	free(lookup);
 	free(directions);
 	free(part_two);
-	uint64_t result = 1;
-	for (size_t i = 0; i < a_count; i++) {
-		result = Lcm(result, all_steps[i]);
-	}
 	printf("Steps part Two: %lu\n", result);
 }
 
