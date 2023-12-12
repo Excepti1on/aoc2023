@@ -11,6 +11,7 @@
 #include "day9/d9.h"
 #include "day10/d10.h"
 #include "day11/d11.h"
+#include "day12/d12.h"
 
 /**
  * Main Entry point, basically just executes all the days in order.
@@ -29,6 +30,7 @@ int main(int argc, char *argv[]) {
 		Day9();
 		Day10();
 		Day11();
+		Day12();
 		return EXIT_SUCCESS;
 	}
 
@@ -66,6 +68,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 11:
 				Day11();
+				break;
+			case 12:
+				Day12();
 				break;
 			default:
 				break;

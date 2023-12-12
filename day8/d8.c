@@ -29,6 +29,7 @@ void Day8() {
 	fgets(buffer, sizeof buffer, file);
 	size_t index = 0;
 	char temp[4] = {};
+	//uint64_t lookup[46656] = {};
 	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		directions[index] = malloc(sizeof(Direction));
