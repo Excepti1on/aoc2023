@@ -8,7 +8,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 
-set(CMAKE_C_FLAGS "-g -Ofast -mavx2 -fopenmp")
+set(CMAKE_C_FLAGS "-g -O3 -mavx2 -fopenmp")
+
+add_library(hashmap STATIC hashmap/map.c hashmap/map.h)
 
 add_library(day1 OBJECT day1/d1.c day1/d1.h)
 
@@ -34,6 +36,8 @@ add_library(day11 OBJECT day11/d11.c day11/d11.h)
 
 add_library(day12 OBJECT day12/d12.c day12/d12.h)
 
+target_link_libraries(day12 hashmap)
+
 add_executable(${PROJECT_NAME} main.c)
 
-target_link_libraries(${PROJECT_NAME} day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12)
+target_link_libraries(${PROJECT_NAME} hashmap day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12)
