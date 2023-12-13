@@ -12,13 +12,13 @@
 
 void Day3() {
 	FILE *file = fopen("../day3/input.txt", "r");
-	char input[GRID_SIZE * GRID_SIZE] = {};
+	char input[GRID_SIZE * GRID_SIZE] = { };
 	for (size_t i = 0; i < GRID_SIZE; ++i) {
 		fgets(input + i * GRID_SIZE, sizeof(input), file);
 	}
 	fclose(file);
 
-	uint8_t digits[GRID_SIZE * GRID_SIZE] = {};
+	uint8_t digits[GRID_SIZE * GRID_SIZE] = { };
 	uint64_t part_one = 0;
 	uint64_t part_two = 0;
 

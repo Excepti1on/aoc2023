@@ -1,6 +1,7 @@
 #include "d11.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define SIZE 140
 
