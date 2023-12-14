@@ -12,13 +12,13 @@
 #include <stdint.h>
 #include <limits.h>
 
-static hashmap* m;
+static hashmap *m;
 
 static uint64_t Solve(int str_len, char str[static str_len], int key_len, char keys[static key_len]);
 
 static uint64_t FoundHash(int str_len, char str[static str_len], int key_len, char keys[static key_len]);
 
-static void free_keys(void *key, size_t ksize, uintptr_t value, void* usr){
+static void FreeKeys(void *key, size_t ksize, uintptr_t value, void *usr) {
 	free(key);
 }
 
@@ -36,9 +36,9 @@ void Day12() {
 		int key_len;
 		for (key_len = 0; temp[key_len]; temp[key_len] == ',' ? key_len++ : *temp++);
 		uint8_t keys_i[key_len] = {};
-		keys_i[0] = (uint8_t)strtol(keys, &keys, 10);
+		keys_i[0] = (uint8_t) strtol(keys, &keys, 10);
 		for (int i = 0; i < key_len; ++i) {
-			keys_i[i + 1] = (char)strtol(keys + 1, &keys, 10);
+			keys_i[i + 1] = (char) strtol(keys + 1, &keys, 10);
 		}
 		key_len++;
 		char keys2[key_len * 5];
@@ -54,7 +54,7 @@ void Day12() {
 		sum2 += count;
 
 	}
-	hashmap_iterate(m, free_keys, NULL);
+	hashmap_iterate(m, FreeKeys, NULL);
 	hashmap_free(m);
 	printf("%lu\n", sum);
 	printf("%lu\n", sum2);
@@ -82,13 +82,13 @@ uint64_t Solve(int str_len, char str[static str_len], int key_len, char keys[sta
 			// try the number of options we get from assuming a . and a #
 			char *key = malloc(str_len + key_len);
 			memcpy(key, str, str_len);
-			memcpy(key+str_len, keys, key_len);
+			memcpy(key + str_len, keys, key_len);
 			uint64_t data;
-			bool got = hashmap_get(m, key, str_len + key_len , &data);
-			if(!got){
+			bool got = hashmap_get(m, key, str_len + key_len, &data);
+			if (!got) {
 				data = FoundHash(str_len, str, key_len, keys);
-				hashmap_set(m, key, str_len+key_len, data);
-			}else{
+				hashmap_set(m, key, str_len + key_len, data);
+			} else {
 				free(key);
 			}
 			return Solve(str_len - 1, str + 1, key_len, keys) + data;

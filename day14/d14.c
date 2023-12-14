@@ -10,9 +10,7 @@
 
 #define SIZE 100
 
-static void free_keys(void *key, size_t ksize, uintptr_t value, void *usr) {
-	free(key);
-}
+static void FreeKeys(void *key, size_t ksize, uintptr_t value, void *usr);
 
 static int PartOne(char **buffer);
 
@@ -57,7 +55,7 @@ void Day14() {
 	}
 	int sum2 = NorthLoad(buffer);
 	printf("%d\n", sum2);
-	hashmap_iterate(map, free_keys, NULL);
+	hashmap_iterate(map, FreeKeys, NULL);
 	hashmap_free(map);
 	for (int i = 0; i < SIZE; ++i) {
 		free(buffer[i]);
@@ -119,7 +117,6 @@ void Cycle(char **buffer) {
 			index++;
 			hash_index = index;
 		}
-
 	}
 	//WEST
 	for (int i = 0; i < SIZE; ++i) {
@@ -201,4 +198,7 @@ void Cycle(char **buffer) {
 			hash_index = index;
 		}
 	}
+}
+void FreeKeys(void *key, size_t ksize, uintptr_t value, void *usr) {
+	free(key);
 }
