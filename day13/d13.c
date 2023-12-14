@@ -2,21 +2,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
-#define SIZE_X 9
-#define SIZE_Y 7
+static uint64_t Mirror(size_t size_1, size_t size_2, const char buffer[100][64], int differences, bool horizontal);
 
 void Day13() {
 	FILE *file = fopen("../day13/input.txt", "r");
-
-	int x = 0;
-	int y = 0;
-	int x2 = 0;
-	int y2 = 0;
-	int x_count = 0;
-	int y_count = 0;
-	int sum = 0;
-	int sum2 = 0;
+	uint64_t sum = 0;
+	uint64_t sum2 = 0;
 	while (!feof(file)) {
 		size_t size_x;
 		size_t size_y;
@@ -32,73 +25,27 @@ void Day13() {
 		}
 		size_y = index;
 		size_x = strlen(buffer[0]) - 1;
-		bool valid_x;
-		for (size_t i = 0; i < size_y - 1; i++) {
-			valid_x = true;
-			for (int j = i, k = i + 1; j >= 0 && k < size_y; k++, j--) {
-				for (size_t l = 0; l < size_x; l++) {
-					if (buffer[j][l] != buffer[k][l]) {
-						valid_x &= false;
-					}
-				}
-			}
-			if (valid_x) {
-				x = (i + 1);
-				sum += x * 100;
-				break;
-			}
-		}
-		bool valid_y;
-		for (size_t i = 0; i < size_x - 1; i++) {
-			valid_y = true;
-			for (int j = i, k = i + 1; j >= 0 && k < size_x; k++, j--) {
-				for (size_t l = 0; l < size_y; l++) {
-					if (buffer[l][j] != buffer[l][k]) {
-						valid_y &= false;
-					}
-				}
-			}
-			if (valid_y) {
-				y = i + 1;
-				sum += y;
-				break;
-			}
-		}
-		for (size_t i = 0; i < size_y - 1; i++) {
-			int diffs = 0;
-			for (int j = i, k = i + 1; j >= 0 && k < size_y; k++, j--) {
-				for (size_t l = 0; l < size_x; l++) {
-					if (buffer[j][l] != buffer[k][l]) {
-						diffs++;
-					}
-				}
-			}
-			if (diffs == 1) {
-				x2 = (i + 1);
-				sum2 += x2 * 100;
-				break;
-			}
-		}
-		for (size_t i = 0; i < size_x - 1; i++) {
-			int diffs = 0;
-			for (int j = i, k = i + 1; j >= 0 && k < size_x; k++, j--) {
-				for (size_t l = 0; l < size_y; l++) {
-					if (buffer[l][j] != buffer[l][k]) {
-						diffs++;
-					}
-				}
-			}
-			if (diffs == 1) {
-				y2 = i + 1;
-				sum2 += y2;
-				break;
-			}
-		}
-
+		sum += Mirror(size_x, size_y, buffer, 0, true);
+		sum += Mirror(size_y, size_x, buffer, 0, false);
+		sum2 += Mirror(size_x, size_y, buffer, 1, true);
+		sum2 += Mirror(size_y, size_x, buffer, 1, false);
 	}
-	printf("x: %d, y: %d\n", x, y);
-	printf("SUM: %d\n", sum);
-	printf("X hits: %d, Y hits: %d\n", x_count, y_count);
-	printf("SUM2: %d\n", sum2);
-	printf("x: %d, y: %d\n", x2, y2);
+	printf("SUM: %lu\n", sum);
+	printf("SUM2: %lu\n", sum2);
+}
+
+uint64_t Mirror(size_t size_1, size_t size_2, const char buffer[100][64], int differences, bool horizontal) {
+	for (ssize_t i = 0; i < size_2 - 1; i++) {
+		int diffs = 0;
+		for (ssize_t j = i, k = i + 1; j >= 0 && k < size_2; k++, j--) {
+			for (ssize_t l = 0; l < size_1; l++) {
+				if (horizontal ? buffer[j][l] != buffer[k][l] : buffer[l][j] != buffer[l][k])
+					diffs++;
+			}
+		}
+		if (differences == diffs) {
+			return horizontal ? (i + 1) * 100 : i + 1;
+		}
+	}
+	return 0;
 }
