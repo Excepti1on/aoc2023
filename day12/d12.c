@@ -54,6 +54,7 @@ void Day12() {
 		sum2 += count;
 
 	}
+	fclose(file);
 	hashmap_iterate(m, FreeKeys, NULL);
 	hashmap_free(m);
 	printf("%lu\n", sum);
@@ -80,16 +81,16 @@ uint64_t Solve(int str_len, char str[static str_len], int key_len, char keys[sta
 			return FoundHash(str_len, str, key_len, keys);
 		case '?': {
 			// try the number of options we get from assuming a . and a #
-			char *key = malloc(str_len + key_len);
+			char key[str_len+key_len+1];
 			memcpy(key, str, str_len);
 			memcpy(key + str_len, keys, key_len);
 			uint64_t data;
 			bool got = hashmap_get(m, key, str_len + key_len, &data);
 			if (!got) {
+				char *key2 = malloc(str_len + key_len+1);
+				memcpy(key2, key, str_len+key_len+1);
 				data = FoundHash(str_len, str, key_len, keys);
-				hashmap_set(m, key, str_len + key_len, data);
-			} else {
-				free(key);
+				hashmap_set(m, key2, str_len + key_len, data);
 			}
 			return Solve(str_len - 1, str + 1, key_len, keys) + data;
 		}

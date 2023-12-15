@@ -5,7 +5,6 @@
 #ifndef AOC2023_DAY15_D15_H_
 #define AOC2023_DAY15_D15_H_
 
-
 void Day15();
 
-#endif //AOC2023_DAY15_D15_H_
+#endif  // AOC2023_DAY15_D15_H_

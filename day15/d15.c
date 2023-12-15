@@ -25,6 +25,7 @@ void Day15() {
     int sum = 0;
     ListNode *hashmap[256] = {NULL};
     fgets(buffer, sizeof buffer, file);
+    fclose(file);
     char *end;
     char *p = strtok(buffer, ",");
     while (p) {
@@ -40,7 +41,7 @@ void Day15() {
 
         char *val;
         int name = strtol(p, &val, 36);
-        int num = strtol(val + 1, NULL, 10);
+        int num = val[1]-'0';
         value = 0;
         i = 0;
         while (isalpha(p[i])) {
@@ -49,7 +50,7 @@ void Day15() {
             value %= 256;
             i++;
         }
-        if (num != 0) {
+        if (!(num < 1 || num > 9)) {
             Insert(&hashmap[value], num, name);
         } else {
             Delete(&hashmap[value], name);
@@ -66,7 +67,7 @@ void Insert(ListNode **head, int value, int name) {
     node->next = NULL;
     node->value = value;
     node->name = name;
-    ListNode *temp = *head;
+    register ListNode *temp = *head;
     if (temp == NULL) {
         *head = node;
         return;
@@ -92,7 +93,7 @@ void Delete(ListNode **head, int name) {
     if (*head == NULL) {
         return;
     }
-    ListNode *temp = *head;
+    register ListNode *temp = *head;
     if ((*head)->name == name) {
         *head = (*head)->next;
         free(temp);

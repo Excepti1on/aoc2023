@@ -56,6 +56,7 @@ void Day7() {
 		//belongs to part 1
 		HandValue(game[i]);
 	}
+	fclose(file);
 	//part 1:
 	qsort(game, lines, sizeof(CardGame *), CompareFunction);
 

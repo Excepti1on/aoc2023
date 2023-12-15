@@ -7,4 +7,4 @@
 
 void Day14();
 
-#endif //AOC2023_DAY14_D14_H_
+#endif  // AOC2023_DAY14_D14_H_

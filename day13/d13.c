@@ -30,6 +30,7 @@ void Day13() {
 		sum2 += Mirror(size_x, size_y, buffer, 1, true);
 		sum2 += Mirror(size_y, size_x, buffer, 1, false);
 	}
+	fclose(file);
 	printf("SUM: %lu\n", sum);
 	printf("SUM2: %lu\n", sum2);
 }

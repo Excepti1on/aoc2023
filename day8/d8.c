@@ -30,7 +30,7 @@ void Day8() {
 	size_t index = 0;
 	char temp[4] = {};
 	//uint64_t lookup[46656] = {};
-	uint64_t *lookup = calloc(46655, sizeof(uint64_t));
+	uint64_t *lookup = calloc(46656, sizeof(uint64_t));
 	while (fgets(buffer, sizeof buffer, file) != NULL) {
 		directions[index] = malloc(sizeof(Direction));
 		strncpy(temp, buffer, 3);
