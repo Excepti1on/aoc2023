@@ -41,7 +41,7 @@ void Day15() {
 
         char *val;
         int name = strtol(p, &val, 36);
-        int num = val[1]-'0';
+        int num = val[1] - '0';
         value = 0;
         i = 0;
         while (isalpha(p[i])) {

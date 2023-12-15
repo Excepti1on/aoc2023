@@ -30,7 +30,7 @@ void Day14() {
         fgets(buffer[i], SIZE + 2, file);
         buffer[i][SIZE] = '\0';
     }
-	fclose(file);
+    fclose(file);
     int sum = PartOne(buffer);
     printf("%d\n", sum);
 
