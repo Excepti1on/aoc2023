@@ -10,3 +10,4 @@ CMakeCache.txt
 .idea
 Makefile
 .vscode
+.editorconfig
