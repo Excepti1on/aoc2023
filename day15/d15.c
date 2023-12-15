@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 typedef struct ListNode {
     int value;
     int name;

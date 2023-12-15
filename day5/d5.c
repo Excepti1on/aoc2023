@@ -65,7 +65,7 @@ void Day5() {
 	size_t insanity = 0;
 	int64_t min2 = INT64_MAX;
 	for (int x = 0; x < SEED_COUNT; x += 2) {
-		printf("%ld \t%%ld\t %d\t", numbers[x], numbers[x + 1], x);
+		printf("%ld \t%d\t %d\t", numbers[x], numbers[x + 1], x);
 		int64_t nums = numbers[x + 1];
 		uint32_t *check = calloc(nums * 2, sizeof(uint32_t));
 		for (int j = 0; j < nums; ++j) {

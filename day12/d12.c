@@ -37,7 +37,8 @@ void Day12() {
         int key_len;
         for (key_len = 0; temp[key_len]; temp[key_len] == ',' ? key_len++ : *temp++)
             ;
-        uint8_t keys_i[key_len] = {};
+        char *keys_i = (char *)calloc(key_len, sizeof(char));
+        // char keys_i[key_len] = {0};
         keys_i[0] = (uint8_t)strtol(keys, &keys, 10);
         for (int i = 0; i < key_len; ++i) {
             keys_i[i + 1] = (char)strtol(keys + 1, &keys, 10);
@@ -48,7 +49,7 @@ void Day12() {
             keys2[i] = keys_i[i % key_len];
         }
         char input2[str_len * 5 + 5];
-        sprintf(input2, "%s?%s?%s?%s?%s", input, input, input, input, input);
+        snprintf(input2, sizeof(input2) - 1, "%s?%s?%s?%s?%s", input, input, input, input, input);
         uint64_t count = Solve(str_len, input, key_len, keys_i);
         sum += count;
         str_len = strlen(input2);
