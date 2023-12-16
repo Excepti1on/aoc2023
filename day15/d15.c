@@ -1,33 +1,37 @@
 #include "d15.h"
 
 #include <ctype.h>
+#include <search.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+static constexpr size_t hashes = 256;
+static constexpr size_t arr_size = 64;
 
-typedef struct ListNode {
-    int value;
+typedef struct LLNode {
     int name;
-    struct ListNode *next;
-} ListNode;
+    int value;
+} LLNode;
 
-static void Insert(ListNode **head, int value, int name);
+typedef struct LLHead {
+    size_t top;
+    struct LLNode nodes[arr_size];
+} LLHead;
 
-static void Delete(ListNode **head, int name);
+static void InsertArray(LLHead head[static 1], const LLNode node[static 1]);
 
-static int SumMap(ListNode *hashmap[static 256]);
+static void DeleteArray(LLHead head[static 1], const LLNode node[static 1]);
 
-static void DeleteMap(ListNode *hashmap[static 256]);
+static int SumArray(const LLHead map[static hashes]);
 
 void Day15() {
     FILE *file = fopen("../day15/input.txt", "r");
-    char buffer[32768] = {};
+    char buffer[32768];
     int sum = 0;
-    ListNode *hashmap[256] = {NULL};
+    LLHead map[hashes];
     fgets(buffer, sizeof buffer, file);
     fclose(file);
-    char *end;
     char *p = strtok(buffer, ",");
     while (p) {
         int value = 0;
@@ -35,104 +39,55 @@ void Day15() {
         while (p[i] != '\0') {
             value += p[i];
             value *= 17;
-            value %= 256;
+            value %= hashes;
             i++;
         }
         sum += value;
 
-        char *val;
-        int name = strtol(p, &val, 36);
-        int num = val[1] - '0';
         value = 0;
         i = 0;
         while (isalpha(p[i])) {
             value += p[i];
             value *= 17;
-            value %= 256;
+            value %= hashes;
             i++;
         }
+        int name = strtol(p, &p, 36);
+        int num = p[1] - '0';
+
         if (!(num < 1 || num > 9)) {
-            Insert(&hashmap[value], num, name);
+            InsertArray(&map[value], &(struct LLNode){name, num});
         } else {
-            Delete(&hashmap[value], name);
+            DeleteArray(&map[value], &(struct LLNode){name, num});
         }
         p = strtok(NULL, "\n,");
     }
     printf("%d\n", sum);
-    printf("%d\n", SumMap(hashmap));
-    DeleteMap(hashmap);
+    printf("Sum: %d\n", SumArray(map));
 }
 
-void Insert(ListNode **head, int value, int name) {
-    ListNode *node = (ListNode *)malloc(sizeof(ListNode));
-    node->next = NULL;
-    node->value = value;
-    node->name = name;
-    register ListNode *temp = *head;
-    if (temp == NULL) {
-        *head = node;
-        return;
-    }
-    if (temp->name == name) {
-        temp->value = value;
-        free(node);
-        return;
-    }
-    while (temp->next != NULL) {
-        temp = temp->next;
-        if (temp->name == name) {
-            temp->value = value;
-            free(node);
-            return;
-        }
-    }
-    node->next = temp->next;
-    temp->next = node;
+int nodecmp(const void *a, const void *b) { return (((const LLNode *)a)->name == ((const LLNode *)b)->name) ? 0 : 1; }
+
+void InsertArray(LLHead head[static 1], const LLNode node[static 1]) {
+    LLNode *found = lsearch(node, head->nodes, &(head->top), sizeof(LLNode), nodecmp);
+    found->value = node->value;
 }
 
-void Delete(ListNode **head, int name) {
-    if (*head == NULL) {
-        return;
+void DeleteArray(LLHead head[static 1], const LLNode node[static 1]) {
+    LLNode *found = lfind(node, head->nodes, &head->top, sizeof(LLNode), nodecmp);
+    if (found) {
+        size_t index = (found - head->nodes);
+        memmove(&head->nodes[index], &head->nodes[index + 1], arr_size - index - 1);
+        head->top--;
     }
-    register ListNode *temp = *head;
-    if ((*head)->name == name) {
-        *head = (*head)->next;
-        free(temp);
-        return;
-    }
-    while (temp->next != NULL && temp->next->name != name) {
-        temp = temp->next;
-    }
-    if (temp->next == NULL) {
-        return;
-    }
-    ListNode *delete = temp->next;
-    temp->next = temp->next->next;
-    free(delete);
 }
 
-int SumMap(ListNode *hashmap[static 256]) {
+int SumArray(const LLHead map[static hashes]) {
     int sum = 0;
-    for (size_t i = 0; i < 256; i++) {
-        ListNode *temp = hashmap[i];
-        int index = 1;
-        while (temp != NULL) {
-            sum += (i + 1) * index * temp->value;
-            temp = temp->next;
-            index++;
+    for (size_t i = 0; i < hashes; i++) {
+        for (size_t j = 0; j < map[i].top; j++) {
+            sum += (i + 1) * (j + 1) * map[i].nodes[j].value;
         }
     }
     return sum;
-}
-
-void DeleteMap(ListNode *hashmap[static 256]) {
-    for (size_t i = 0; i < 256; i++) {
-        ListNode *temp = hashmap[i];
-        ListNode *delete = temp;
-        while (temp != NULL) {
-            temp = temp->next;
-            free(delete);
-            delete = temp;
-        }
-    }
 }
