@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <search.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,8 +11,8 @@ static constexpr size_t hashes = 256;
 static constexpr size_t arr_size = 64;
 
 typedef struct LLNode {
-    int name;
-    int value;
+    uint32_t name;
+    uint32_t value;
 } LLNode;
 
 typedef struct LLHead {
@@ -23,18 +24,20 @@ static void InsertArray(LLHead head[static 1], const LLNode node[static 1]);
 
 static void DeleteArray(LLHead head[static 1], const LLNode node[static 1]);
 
-static int SumArray(const LLHead map[static hashes]);
+static uint32_t SumArray(const LLHead map[static hashes]);
 
 void Day15() {
     FILE *file = fopen("../day15/input.txt", "r");
     char buffer[32768];
-    int sum = 0;
-    LLHead map[hashes];
     fgets(buffer, sizeof buffer, file);
     fclose(file);
+
+    LLHead map[hashes];
+    uint32_t sum = 0;
+
     char *p = strtok(buffer, ",");
     while (p) {
-        int value = 0;
+        uint32_t value = 0;
         size_t i = 0;
         while (p[i] != '\0') {
             value += p[i];
@@ -52,8 +55,8 @@ void Day15() {
             value %= hashes;
             i++;
         }
-        int name = strtol(p, &p, 36);
-        int num = p[1] - '0';
+        uint32_t name = strtol(p, &p, 36);
+        uint32_t num = p[1] - '0';
 
         if (!(num < 1 || num > 9)) {
             InsertArray(&map[value], &(struct LLNode){name, num});
@@ -66,7 +69,7 @@ void Day15() {
     printf("Sum: %d\n", SumArray(map));
 }
 
-int nodecmp(const void *a, const void *b) { return (((const LLNode *)a)->name == ((const LLNode *)b)->name) ? 0 : 1; }
+int nodecmp(const void *a, const void *b) { return !(((const LLNode *)a)->name == ((const LLNode *)b)->name); }
 
 void InsertArray(LLHead head[static 1], const LLNode node[static 1]) {
     LLNode *found = lsearch(node, head->nodes, &(head->top), sizeof(LLNode), nodecmp);
@@ -82,8 +85,8 @@ void DeleteArray(LLHead head[static 1], const LLNode node[static 1]) {
     }
 }
 
-int SumArray(const LLHead map[static hashes]) {
-    int sum = 0;
+uint32_t SumArray(const LLHead map[static hashes]) {
+    uint32_t sum = 0;
     for (size_t i = 0; i < hashes; i++) {
         for (size_t j = 0; j < map[i].top; j++) {
             sum += (i + 1) * (j + 1) * map[i].nodes[j].value;
