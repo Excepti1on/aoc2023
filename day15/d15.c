@@ -10,21 +10,23 @@
 static constexpr size_t hashes = 256;
 static constexpr size_t arr_size = 64;
 
-typedef struct LLNode {
+struct LLNode {
     uint32_t name;
     uint32_t value;
-} LLNode;
+};
 
-typedef struct LLHead {
+struct LLHead {
     size_t top;
     struct LLNode nodes[arr_size];
-} LLHead;
+};
 
-static void InsertArray(LLHead head[static 1], const LLNode node[static 1]);
+int NodeCmp(const void *a, const void *b);
 
-static void DeleteArray(LLHead head[static 1], const LLNode node[static 1]);
+static void Insert(struct LLHead head[static 1], const struct LLNode node[static 1]);
 
-static uint32_t SumArray(const LLHead map[static hashes]);
+static void Delete(struct LLHead head[static 1], const struct LLNode node[static 1]);
+
+static uint32_t Sum(const struct LLHead map[static hashes]);
 
 void Day15() {
     FILE *file = fopen("../day15/input.txt", "r");
@@ -32,7 +34,7 @@ void Day15() {
     fgets(buffer, sizeof buffer, file);
     fclose(file);
 
-    LLHead map[hashes];
+    struct LLHead map[hashes];
     uint32_t sum = 0;
 
     char *p = strtok(buffer, ",");
@@ -59,33 +61,35 @@ void Day15() {
         uint32_t num = p[1] - '0';
 
         if (!(num < 1 || num > 9)) {
-            InsertArray(&map[value], &(struct LLNode){name, num});
+            Insert(&map[value], &(struct LLNode){name, num});
         } else {
-            DeleteArray(&map[value], &(struct LLNode){name, num});
+            Delete(&map[value], &(struct LLNode){name, num});
         }
         p = strtok(NULL, "\n,");
     }
     printf("%d\n", sum);
-    printf("Sum: %d\n", SumArray(map));
+    printf("Sum: %d\n", Sum(map));
 }
 
-int nodecmp(const void *a, const void *b) { return !(((const LLNode *)a)->name == ((const LLNode *)b)->name); }
-
-void InsertArray(LLHead head[static 1], const LLNode node[static 1]) {
-    LLNode *found = lsearch(node, head->nodes, &(head->top), sizeof(LLNode), nodecmp);
-    found->value = node->value;
+int NodeCmp(const void *a, const void *b) {
+    return !(((const struct LLNode *)a)->name == ((const struct LLNode *)b)->name);
 }
 
-void DeleteArray(LLHead head[static 1], const LLNode node[static 1]) {
-    LLNode *found = lfind(node, head->nodes, &head->top, sizeof(LLNode), nodecmp);
+void Insert(struct LLHead head[static 1], const struct LLNode node[static 1]) {
+    ((struct LLNode *)lsearch(node, head->nodes, &(head->top), sizeof(struct LLNode), NodeCmp))
+        ->value = node->value;
+}
+
+void Delete(struct LLHead head[static 1], const struct LLNode node[static 1]) {
+    struct LLNode *found = lfind(node, head->nodes, &head->top, sizeof(struct LLNode), NodeCmp);
     if (found) {
-        size_t index = (found - head->nodes);
+        size_t index = found - head->nodes;
         memmove(&head->nodes[index], &head->nodes[index + 1], arr_size - index - 1);
         head->top--;
     }
 }
 
-uint32_t SumArray(const LLHead map[static hashes]) {
+uint32_t Sum(const struct LLHead map[static hashes]) {
     uint32_t sum = 0;
     for (size_t i = 0; i < hashes; i++) {
         for (size_t j = 0; j < map[i].top; j++) {
