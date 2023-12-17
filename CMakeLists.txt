@@ -44,6 +44,8 @@ add_library(day14 OBJECT day14/d14.c day14/d14.h)
 
 add_library(day15 OBJECT day15/d15.c day15/d15.h)
 
+add_library(day16 OBJECT day16/d16.c day16/d16.h)
+
 add_executable(${PROJECT_NAME} main.c)
 
-target_link_libraries(${PROJECT_NAME} hashmap day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12 day13 day14 day15)
+target_link_libraries(${PROJECT_NAME} hashmap day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12 day13 day14 day15 day16)
