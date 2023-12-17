@@ -45,7 +45,7 @@ void Day16() {
 		}
 	}
 	printf("%d\n", sum);
-	int sum2 = 0;
+
 	for (int j = 0; j < SIZE; ++j) {
 		struct Beam *beams[4] =
 			{&(struct Beam) {0, j, RIGHT},
@@ -64,10 +64,10 @@ void Day16() {
 						| visited[i * SIZE + k + SIZE * SIZE * 3];
 				}
 			}
-			sum2 = sum2 < temp ? temp : sum2;
+			sum = sum < temp ? temp : sum;
 		}
 	}
-	printf("%d\n", sum2);
+	printf("%d\n", sum);
 }
 
 void Path(struct Beam *beam, char buffer[SIZE][SIZE + 2], bool (*visited)[SIZE * SIZE * 4]) {
@@ -80,7 +80,7 @@ void Path(struct Beam *beam, char buffer[SIZE][SIZE + 2], bool (*visited)[SIZE *
 		(*visited)[beam->y * SIZE + beam->x + beam->direction * SIZE * SIZE] = true;
 		switch (buffer[beam->y][beam->x]) {
 			case '/':
-				beam->direction = beam->direction % 2 ? beam->direction - 1 : beam->direction + 1;
+				beam->direction += (beam->direction % 2) * -2 + 1;
 				break;
 			case '\\':
 				beam->direction = (beam->direction + 2) % 4;
