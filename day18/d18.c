@@ -3,73 +3,82 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define SIZE 1024
 void Day18() {
-    FILE *file = fopen("../day18/input.txt", "r");
-    char ch;
-    int lines = 1;
-    while (!feof(file)) {
-        ch = fgetc(file);
-        if (ch == '\n') {
-            lines++;
-        }
-    }
-    rewind(file);
-    char commands[SIZE][16];
-    for (size_t i = 0; i < lines; i++) {
-        fgets(commands[i], 16, file);
-        commands[i][14] = '\0';
-    }
-    fclose(file);
+	FILE *file = fopen("../day18/input.txt", "r");
+	char ch;
+	size_t lines = 638;
+	/*
+	while (!feof(file)) {
+		ch = fgetc(file);
+		if (ch == '\n') {
+			lines++;
+		}
+	}*/
+	rewind(file);
+	char commands[SIZE][16];
+	for (size_t i = 0; i < lines; i++) {
+		fgets(commands[i], 16, file);
+		commands[i][14] = '\0';
+	}
+	fclose(file);
 
-    int pos[2] = {0, 0};
-    int lastPos[2] = {0, 0};
-    int pos2[2] = {0, 0};
-    int lastPos2[2] = {0, 0};
-    int maxX = 0, maxY = 0;
-    int sum = 0;
-    long long sum2 = 0;
-    int cicumference = 0, circ2 = 0;
-    for (size_t i = 0; i < lines; i++) {
-        lastPos[0] = pos[0];
-        lastPos[1] = pos[1];
-        long num = strtol(commands[i] + 2, NULL, 10);
-        strtok(commands[i], "#");
-        char *pch = strtok(NULL, ")");
-        long long num2 = strtoll(pch, NULL, 16);
-        printf("%lld\n", num2);
-        lastPos2[0] = pos2[0];
-        lastPos2[1] = pos2[1];
-        cicumference += num;
-        circ2 += num2;
-        switch (commands[i][0]) {
-            case 'R': {
-                pos[0] += num;
-                pos2[0] += num2;
-                break;
-            }
-            case 'D': {
-                pos[1] += num;
-                pos2[1] += num2;
-                break;
-            }
-            case 'L': {
-                pos[0] -= num;
-                pos2[0] -= num2;
-                break;
-            }
-            case 'U': {
-                pos[1] -= num;
-                pos2[1] -= num2;
-                break;
-            }
-        }
-        sum += lastPos[0] * pos[1] - lastPos[1] * pos[0];
-        sum2 += lastPos2[0] * pos2[1] - lastPos2[1] * pos2[0];
-    }
-    int result = sum / 2 + cicumference / 2 + 1;
-    long long result2 = sum2 / 2 + circ2 / 2 + 1;
-    printf("%d\n", result);
-    printf("%lld\n", result2);
+	int64_t pos[2] = {0, 0};
+	int64_t last_pos[2] = {0, 0};
+	int64_t pos2[2] = {0, 0};
+	int64_t last_pos_2[2] = {0, 0};
+	int64_t sum = 0;
+	int64_t sum2 = 0;
+	int64_t circ = 0;
+	int64_t circ2 = 0;
+	for (size_t i = 0; i < lines; i++) {
+		last_pos[0] = pos[0];
+		last_pos[1] = pos[1];
+		int64_t num = strtol(commands[i] + 2, NULL, 10);
+		strtok(commands[i], "#");
+		char *pch = strtok(NULL, ")");
+		char number[5];
+		memcpy(number, pch, 5);
+		int64_t num2 = strtoll(number, NULL, 16);
+		last_pos_2[0] = pos2[0];
+		last_pos_2[1] = pos2[1];
+		circ += num;
+		circ2 += num2;
+		switch (commands[i][0]) {
+			case 'R':
+				pos[0] += num;
+				break;
+			case 'D':
+				pos[1] += num;
+				break;
+			case 'L':
+				pos[0] -= num;
+				break;
+			case 'U':
+				pos[1] -= num;
+				break;
+		}
+		switch (pch[5]) {
+			case '0':
+				pos2[0] += num2;
+				break;
+			case '1':
+				pos2[1] += num2;
+				break;
+			case '2':
+				pos2[0] -= num2;
+				break;
+			case '3':
+				pos2[1] -= num2;
+				break;
+		}
+		sum += last_pos[0] * pos[1] - last_pos[1] * pos[0];
+		sum2 += last_pos_2[0] * pos2[1] - last_pos_2[1] * pos2[0];
+	}
+	int64_t result = sum / 2 + circ / 2 + 1;
+	int64_t result2 = sum2 / 2 + circ2 / 2 + 1;
+	printf("%ld\n", result);
+	printf("%ld\n", result2);
 }
