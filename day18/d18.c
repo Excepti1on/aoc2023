@@ -10,13 +10,6 @@ void Day18() {
 	FILE *file = fopen("../day18/input.txt", "r");
 	char ch;
 	size_t lines = 638;
-	/*
-	while (!feof(file)) {
-		ch = fgetc(file);
-		if (ch == '\n') {
-			lines++;
-		}
-	}*/
 	rewind(file);
 	char commands[SIZE][16];
 	for (size_t i = 0; i < lines; i++) {
